@@ -1,0 +1,33 @@
+version: '3.6'
+
+services:
+  sample.chathub.api:
+    image: ${DOCKER_REGISTRY-}samplechathub
+    restart: unless-stopped
+    container_name: sample-chathub
+    build:
+      context: .
+      dockerfile: src/Sample.ChatHub.API/Dockerfile
+    
+  rabbitmq:
+    image: rabbitmq:management
+    restart: unless-stopped
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  mongo:
+    image: mongo
+    restart: unless-stopped
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - "27017:27017"
+    volumes:
+      - /home/Docker/Volumes/MongoDB:/data/db

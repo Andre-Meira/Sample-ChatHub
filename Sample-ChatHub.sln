@@ -17,6 +17,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.ChatHub.Infrastructu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.ChatHub.Domain.Abstracts", "src\core\Sample.ChatHub.Domain.Abstracts\Sample.ChatHub.Domain.Abstracts.csproj", "{7B11255A-159E-4CA7-86EB-198856FD3F2F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{D7EE8978-F19F-4F9E-BAD0-242A6A21ACFE}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yaml = docker-compose.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,7 +47,7 @@ Global
 		{7B11255A-159E-4CA7-86EB-198856FD3F2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7B11255A-159E-4CA7-86EB-198856FD3F2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B11255A-159E-4CA7-86EB-198856FD3F2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7B11255A-159E-4CA7-86EB-198856FD3F2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B11255A-159E-4CA7-86EB-198856FD3F2F}.Release|Any CPU.Build.0 = Release|Any CPU		
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
