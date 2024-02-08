@@ -2,7 +2,7 @@
 
 public interface IChatCreated
 {
-    Guid Id { get; set; }
+    Guid Id { get; init; }
 
-    string Name { get; set; }   
+    string Name { get; init; }   
 }
