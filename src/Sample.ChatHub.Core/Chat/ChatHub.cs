@@ -45,7 +45,18 @@ public record ChatHub : IAggregateStream<IChatEventStream>
 
         ChatId = id;
     }
+        
+    public void SendMessage(Message message)
+    {
+        bool UserExist = Users.Contains(message.UserId);
 
-    public bool Compare(Guid id) => id == ChatId;
+        if (UserExist == false)
+        {
+            throw new ArgumentException("Usuario não faz parte do chat então não pode mandar mensagem");
+        }
+
+        Messages.Add(message);
+    }
+
    
 }
