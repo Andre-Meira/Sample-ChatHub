@@ -26,6 +26,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D54939F9
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.ChatHub.Core.Tests", "tests\Sample.ChatHub.Core.Tests\Sample.ChatHub.Core.Tests.csproj", "{AE3DFA35-99DD-4D7E-BAA5-8A427CFD7C80}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.ChatHub.Worker", "src\Sample.ChatHub.Worker\Sample.ChatHub.Worker.csproj", "{1CAF51F1-1A14-4F78-AFB8-9B8D97D978EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{AE3DFA35-99DD-4D7E-BAA5-8A427CFD7C80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE3DFA35-99DD-4D7E-BAA5-8A427CFD7C80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE3DFA35-99DD-4D7E-BAA5-8A427CFD7C80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CAF51F1-1A14-4F78-AFB8-9B8D97D978EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CAF51F1-1A14-4F78-AFB8-9B8D97D978EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CAF51F1-1A14-4F78-AFB8-9B8D97D978EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CAF51F1-1A14-4F78-AFB8-9B8D97D978EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,6 +74,7 @@ Global
 		{4C972078-9BB9-421B-B973-754AB23B7EE2} = {920554FA-854C-46E1-9C11-B032AE0D3127}
 		{7B11255A-159E-4CA7-86EB-198856FD3F2F} = {DF44A4B8-BD93-4CE7-83F3-4B527D9948BC}
 		{AE3DFA35-99DD-4D7E-BAA5-8A427CFD7C80} = {D54939F9-05D3-4DF5-817F-6E91C630C0CD}
+		{1CAF51F1-1A14-4F78-AFB8-9B8D97D978EB} = {920554FA-854C-46E1-9C11-B032AE0D3127}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {95401B8D-40A6-47D6-B4F1-0194B57AC5B1}

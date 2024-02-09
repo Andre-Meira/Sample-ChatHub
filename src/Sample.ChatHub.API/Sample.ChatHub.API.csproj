@@ -12,12 +12,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+    <PackageReference Include="Rabbitmq.Client" Version="6.8.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Sample.ChatHub.Core\Sample.ChatHub.Core.csproj" />
-    <ProjectReference Include="..\Sample.ChatHub.Infrastructure\Sample.ChatHub.Infrastructure.csproj" />
-  </ItemGroup>
+  </ItemGroup>  
 
 </Project>
