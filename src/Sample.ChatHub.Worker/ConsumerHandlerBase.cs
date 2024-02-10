@@ -53,7 +53,7 @@ public abstract class ConsumerHandlerBase<TMessage> : BackgroundService, IDispos
 
             consumerEvent.Received += async (model, ea) =>
             {
-                var message = TransformMessage(ea);
+                TMessage message = TransformMessage(ea);
                 var context = new ConsumerContext<TMessage>(message, ea.DeliveryTag, _channel);
                 await Consumer(context);
             };
