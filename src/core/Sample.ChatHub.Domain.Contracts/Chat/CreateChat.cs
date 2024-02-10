@@ -3,4 +3,4 @@
 namespace Sample.ChatHub.Domain.Contracts;
 
 [Contract("create-chat")]
-public record CreateChat(string Name, Guid IdUser);
+public record CreateChat(Guid IdChat, string Name, Guid IdUser);

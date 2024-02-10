@@ -17,9 +17,11 @@ public class ChatHubController : ControllerBase
     [Produces("application/json")]
     public async Task<IActionResult> Create([FromBody, Required] string name)
     {
-        CreateChat chat = new CreateChat(name, Guid.NewGuid());        
+        Guid IdChat = Guid.NewGuid();
+
+        CreateChat chat = new CreateChat(IdChat, name, Guid.NewGuid());        
         await _context.PublishMessage(chat).ConfigureAwait(false);
 
-        return Ok("Chat criado");
+        return Ok($"Chat criado. id:{IdChat}");
     }
 }

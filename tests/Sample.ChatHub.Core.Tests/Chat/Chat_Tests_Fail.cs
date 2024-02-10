@@ -11,6 +11,7 @@ public class Chat_Tests_Fail
     private readonly IChatProcessStream _chatProcess;    
     private readonly IChatEventsRepositore _chatEventsRepositore;    
     private readonly IList<IChatEventStream>  chatEventStreams = new List<IChatEventStream>();
+    private Guid IdChat = Guid.NewGuid();    
    
     public Chat_Tests_Fail()
     {        
@@ -33,9 +34,9 @@ public class Chat_Tests_Fail
     {
         Guid id = Guid.NewGuid();
 
-        ChatCreated chatCreated = new ChatCreated("Chat Teste", id);
+        ChatCreated chatCreated = new ChatCreated(IdChat, "Chat Teste", id);
         await _chatProcess.Include(chatCreated);
-        ChatCreated chatCreated2 = new ChatCreated("Chat Teste2", id);       
+        ChatCreated chatCreated2 = new ChatCreated(IdChat, "Chat Teste2", id);       
 
         await Assert.ThrowsAsync<ArgumentException>(() =>
         {
@@ -49,7 +50,7 @@ public class Chat_Tests_Fail
         Guid id = Guid.NewGuid();
         Guid IdUser = Guid.NewGuid();   
 
-        ChatCreated chatCreated = new ChatCreated("Chat Teste", id);
+        ChatCreated chatCreated = new ChatCreated(IdChat, "Chat Teste", id);
         await _chatProcess.Include(chatCreated);
 
         byte[] message = Encoding.UTF8.GetBytes("Primeira message do chat");
@@ -66,7 +67,7 @@ public class Chat_Tests_Fail
     {
         Guid idOwner = Guid.NewGuid();        
 
-        ChatCreated chatCreated = new ChatCreated("Chat Teste", idOwner);
+        ChatCreated chatCreated = new ChatCreated(IdChat, "Chat Teste", idOwner);
         await _chatProcess.Include(chatCreated);
 
         UserJoinedChat userJoinedChat = new UserJoinedChat(chatCreated.IdCorrelation, idOwner);
@@ -84,7 +85,7 @@ public class Chat_Tests_Fail
         Guid idOwner = Guid.NewGuid();
         Guid idUser = Guid.NewGuid();
 
-        ChatCreated chatCreated = new ChatCreated("Chat Teste", idOwner);
+        ChatCreated chatCreated = new ChatCreated(IdChat, "Chat Teste", idOwner);
         await _chatProcess.Include(chatCreated);
 
         UserLeftChat userLeftChat = new UserLeftChat(chatCreated.IdCorrelation, idUser);

@@ -1,8 +1,6 @@
 ﻿using Moq;
 using Sample.ChatHub.Core.Chat;
 using Sample.ChatHub.Core.Chat.Events;
-using Sample.ChatHub.Domain.Contracts.Messages;
-using System.Collections;
 using System.Text;
 
 namespace Sample.ChatHub.Core.Tests.Chat;
@@ -13,7 +11,8 @@ public class Chat_Tests_Sucess
     private readonly IChatProcessStream _chatProcess;    
     private readonly IChatEventsRepositore _chatEventsRepositore;    
     private readonly IList<IChatEventStream>  chatEventStreams = new List<IChatEventStream>();
-   
+    private Guid IdChat = Guid.NewGuid();
+
     public Chat_Tests_Sucess()
     {        
         var chatRepositoreRepositore = new Mock<IChatEventsRepositore>();
@@ -35,7 +34,7 @@ public class Chat_Tests_Sucess
     {
         Guid id = Guid.NewGuid();
 
-        ChatCreated chatCreated = new ChatCreated("Chat Teste", id);
+        ChatCreated chatCreated = new ChatCreated(IdChat, "Chat Teste", id);
         await _chatProcess.Include(chatCreated);
 
         var chat = await _chatProcess.Process(chatCreated.IdCorrelation);
@@ -48,7 +47,7 @@ public class Chat_Tests_Sucess
     {
         Guid id = Guid.NewGuid();
 
-        ChatCreated chatCreated = new ChatCreated("Chat Teste", id);
+        ChatCreated chatCreated = new ChatCreated(IdChat, "Chat Teste", id);
         await _chatProcess.Include(chatCreated);
 
         byte[] message = Encoding.UTF8.GetBytes("Primeira message do chat");
@@ -66,7 +65,7 @@ public class Chat_Tests_Sucess
         Guid idOwner = Guid.NewGuid();
         Guid idUser = Guid.NewGuid();
 
-        ChatCreated chatCreated = new ChatCreated("Chat Teste", idOwner);
+        ChatCreated chatCreated = new ChatCreated(IdChat, "Chat Teste", idOwner);
         await _chatProcess.Include(chatCreated);
 
         UserJoinedChat userJoinedChat = new UserJoinedChat(chatCreated.IdCorrelation, idUser);
@@ -83,7 +82,7 @@ public class Chat_Tests_Sucess
     {
         Guid idOwner = Guid.NewGuid();        
 
-        ChatCreated chatCreated = new ChatCreated("Chat Teste", idOwner);
+        ChatCreated chatCreated = new ChatCreated(IdChat, "Chat Teste", idOwner);
         await _chatProcess.Include(chatCreated);
 
         UserLeftChat userLeftChat = new UserLeftChat(chatCreated.IdCorrelation, idOwner);

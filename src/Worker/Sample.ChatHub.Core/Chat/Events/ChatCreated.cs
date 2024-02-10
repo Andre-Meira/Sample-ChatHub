@@ -2,13 +2,13 @@
 
 public record ChatCreated : IChatEventStream
 {
-    public ChatCreated(string name, Guid idUser)
+    public ChatCreated(Guid idChat, string name, Guid idUser)
     {
         Name = name;
         IdUser = idUser;
 
         DataProcessed = DateTime.Now;
-        IdCorrelation = Guid.NewGuid(); 
+        IdCorrelation = idChat;
     }
     
     public string Name { get; init; }
