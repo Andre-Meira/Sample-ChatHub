@@ -1,8 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <ItemGroup>
-    <ProjectReference Include="..\Sample.ChatHub.Domain.Bus\Sample.ChatHub.Domain.Bus.csproj" />
-  </ItemGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">  
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>

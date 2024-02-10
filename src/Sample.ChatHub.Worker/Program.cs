@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RabbitMQ.Client;
 using Sample.ChatHub.Domain.Abstracts.Options;
+using Sample.ChatHub.Worker;
 
 public class Program
 {
@@ -17,6 +19,12 @@ public class Program
                .AddJsonFile("appsettings.json", optional: true)
                .Build();
 
+        var connectionFactory = new ConnectionFactory();
+        connectionFactory.Password = "guest";
+        connectionFactory.UserName = "guest";
+        connectionFactory.HostName = "localhost";
+        
+
         return Host.CreateDefaultBuilder(args)
              .ConfigureAppConfiguration(appConfig =>
              {
@@ -31,6 +39,9 @@ public class Program
                 services.AddOptions();
                 services.Configure<BusOptions>(hostContext.Configuration.GetSection(BusOptions.Key));
                 services.Configure<MongoOptions>(hostContext.Configuration.GetSection(MongoOptions.Key));                
+                services.AddTransient<IConnectionFactory>(e => connectionFactory);
+
+                services.AddHostedService<CreateChatHandlerConsumer>();
            });
     }
        
