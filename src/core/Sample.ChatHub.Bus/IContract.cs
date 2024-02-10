@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace Sample.ChatHub.Domain.Contracts;
+﻿namespace Sample.ChatHub.Bus;
 
 
 [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]

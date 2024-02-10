@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
+using Sample.ChatHub.Bus;
 using Sample.ChatHub.Domain.Abstracts.Options;
 using Sample.ChatHub.Worker;
 
@@ -39,7 +40,7 @@ public class Program
                 services.AddOptions();
                 services.Configure<BusOptions>(hostContext.Configuration.GetSection(BusOptions.Key));
                 services.Configure<MongoOptions>(hostContext.Configuration.GetSection(MongoOptions.Key));                
-                services.AddTransient<IConnectionFactory>(e => connectionFactory);
+                services.AddBus(connectionFactory);
 
                 services.AddHostedService<CreateChatHandlerConsumer>();
            });

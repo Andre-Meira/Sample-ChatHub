@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using Sample.ChatHub.Bus;
 using Sample.ChatHub.Domain.Contracts;
 
 namespace Sample.ChatHub.Worker;

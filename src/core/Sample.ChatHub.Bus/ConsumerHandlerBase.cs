@@ -3,9 +3,8 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Sample.ChatHub.Domain.Contracts;
 
-namespace Sample.ChatHub.Worker;
+namespace Sample.ChatHub.Bus;
 
 public abstract class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
     where TMessage : class 

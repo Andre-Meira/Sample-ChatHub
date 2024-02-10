@@ -1,7 +1,6 @@
 ﻿using RabbitMQ.Client;
-using Sample.ChatHub.Domain.Contracts;
 
-namespace Sample.ChatHub.Worker;
+namespace Sample.ChatHub.Bus;
 
 public interface IConsumerContext<TMessage> where TMessage : class
 {    

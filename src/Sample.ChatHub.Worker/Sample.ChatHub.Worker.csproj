@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Sample.ChatHub.Core\Sample.ChatHub.Core.csproj" />
     <ProjectReference Include="..\Sample.ChatHub.Infrastructure\Sample.ChatHub.Infrastructure.csproj" />
+    <ProjectReference Include="..\Core\Sample.ChatHub.Bus\Sample.ChatHub.Bus.csproj" />
   </ItemGroup>
 
   <ItemGroup>
