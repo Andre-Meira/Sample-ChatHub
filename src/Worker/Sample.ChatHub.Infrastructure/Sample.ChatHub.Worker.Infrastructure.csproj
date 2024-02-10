@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Sample.ChatHub.Core\Sample.ChatHub.Core.csproj" />
+    <ProjectReference Include="..\Sample.ChatHub.Core\Sample.ChatHub.Worker.Core.csproj" />
   </ItemGroup>
 
 </Project>
