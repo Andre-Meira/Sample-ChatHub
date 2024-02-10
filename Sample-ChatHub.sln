@@ -24,7 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D54939F9-05D3-4DF5-817F-6E91C630C0CD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.ChatHub.Core.Tests", "tests\Sample.ChatHub.Core.Tests\Sample.ChatHub.Core.Tests.csproj", "{AE3DFA35-99DD-4D7E-BAA5-8A427CFD7C80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.ChatHub.Worker.Core.Tests", "tests\Sample.ChatHub.Core.Tests\Sample.ChatHub.Worker.Core.Tests.csproj", "{AE3DFA35-99DD-4D7E-BAA5-8A427CFD7C80}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.ChatHub.Worker", "src\Worker\Sample.ChatHub.Worker\Sample.ChatHub.Worker.csproj", "{1CAF51F1-1A14-4F78-AFB8-9B8D97D978EB}"
 EndProject

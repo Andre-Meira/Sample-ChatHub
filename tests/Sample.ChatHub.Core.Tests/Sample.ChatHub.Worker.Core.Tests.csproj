@@ -23,8 +23,8 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Sample.ChatHub.Core\Sample.ChatHub.Core.csproj" />
+  <ItemGroup>    
+    <ProjectReference Include="..\..\src\Worker\Sample.ChatHub.Core\Sample.ChatHub.Worker.Core.csproj" />
   </ItemGroup>
 
 </Project>

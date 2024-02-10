@@ -18,9 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Sample.ChatHub.Bus\Sample.ChatHub.Bus.csproj" />
     <ProjectReference Include="..\Sample.ChatHub.Core\Sample.ChatHub.Worker.Core.csproj" />
-    <ProjectReference Include="..\Sample.ChatHub.Infrastructure\Sample.ChatHub.Worker.Infrastructure.csproj" />
-    <ProjectReference Include="..\Core\Sample.ChatHub.Bus\Sample.ChatHub.Bus.csproj" />
+    <ProjectReference Include="..\Sample.ChatHub.Infrastructure\Sample.ChatHub.Worker.Infrastructure.csproj" />    
   </ItemGroup>
 
   <ItemGroup>
