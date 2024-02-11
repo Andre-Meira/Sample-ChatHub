@@ -52,19 +52,20 @@ builder.Services.AddAuthentication(config =>
 .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>(BasicAuthenticationHandler.Schema, null);
 
 builder.Services.AddAuthorization();
-
 builder.Services.AddBus(connectionFactory);
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<ChatHubServer>("/chatHub").RequireAuthorization();
 
 app.Run();
