@@ -31,14 +31,7 @@ public class ChatHubServer : BaseHub<IChatHub>
     {
         _logger.LogInformation("{0} User disconnected", UserName);
         return base.OnDisconnectedAsync(exception);
-    }
-
-
-    public async Task JoineChat(Guid guid)
-    {
-        await _context.PublishMessage(new UserJoinChat(guid, UserId)).ConfigureAwait(false);
-        await Groups.AddToGroupAsync(Context.ConnectionId, guid.ToString());
-    }    
+    } 
 
     public async Task SendMessage(Guid idChat, string message)
     {
