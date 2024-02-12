@@ -1,6 +1,7 @@
 ﻿using Moq;
 using Sample.ChatHub.Core.Chat;
 using Sample.ChatHub.Core.Chat.Events;
+using Sample.ChatHub.Domain.Contracts.Messages;
 using System.Text;
 
 namespace Sample.ChatHub.Core.Tests.Chat;
@@ -51,7 +52,7 @@ public class Chat_Tests_Sucess
         await _chatProcess.Include(chatCreated);
 
         string message = "Primeira message do chat";
-        SendMessageChat sendMessageChat = new SendMessageChat(chatCreated.IdCorrelation, id, message);
+        SendMessageChat sendMessageChat = new SendMessageChat(new ContextMessage(IdChat, id, message));
         await _chatProcess.Include(sendMessageChat);
 
         var chat = await _chatProcess.Process(chatCreated.IdCorrelation);

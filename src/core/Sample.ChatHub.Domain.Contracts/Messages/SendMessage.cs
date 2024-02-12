@@ -9,5 +9,5 @@ namespace Sample.ChatHub.Domain.Contracts.Messages;
 /// <param name="Sender">Id do remetente que envio a message</param>
 /// <param name="Text">Message que sera enviada</param>
 [Contract("send-message")]
-public record SendMessage(Guid IdChat, Guid Sender, string Text);
+public record SendMessage(ContextMessage Context);
 

@@ -1,12 +1,14 @@
 ﻿
+using Sample.ChatHub.Domain.Contracts.Messages;
+
 namespace Sample.ChatHub.Core.Chat.Events;
 
 public class SendMessageChat : IChatEventStream
 {
-    public SendMessageChat(Guid chatId,Guid userId, string message)
+    public SendMessageChat(ContextMessage context)
     {
-        IdCorrelation = chatId;
-        Message = new Message(message, userId);
+        IdCorrelation = context.IdChat;
+        Message = context;
         DataProcessed = DateTime.Now;
 
     }
@@ -14,8 +16,7 @@ public class SendMessageChat : IChatEventStream
     public Guid IdCorrelation { get; init; }
     public DateTime DataProcessed { get; init; }
 
-    public Message Message { get; init; }
-    public Guid IdUser { get; init; }
+    public ContextMessage Message { get; init; }    
 
     public void Process(ChatHub chat) => chat.SendMessage(Message);
 }

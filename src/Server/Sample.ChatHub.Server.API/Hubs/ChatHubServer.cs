@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.SignalR;
 using Sample.ChatHub.Bus;
 using Sample.ChatHub.Domain.Contracts;
-using Sample.ChatHub.Domain.Contracts.Chat;
 using Sample.ChatHub.Domain.Contracts.Messages;
 
 namespace Sample.ChatHub.Server.API;
@@ -21,7 +20,9 @@ public class ChatHubServer : BaseHub<IChatHub>
 
     public override async Task OnConnectedAsync()
     {
-        _logger.LogInformation("{0} Connected in server", UserName);
+        _logger.LogInformation("{0} Connected from the server.", UserName);
+
+        await _context.PublishMessage<SyncUserMessage>(new(UserId)).ConfigureAwait(false);
 
         var context = new ReceiveMessageContext(Guid.Empty, Guid.Empty, "Sistema", $"Bem vindo ao chat {UserName!}");        
         await Clients.Client(Context.ConnectionId).ReceiveMessage(context);
@@ -29,7 +30,7 @@ public class ChatHubServer : BaseHub<IChatHub>
 
     public override Task OnDisconnectedAsync(Exception? exception)
     {
-        _logger.LogInformation("{0} User disconnected", UserName);
+        _logger.LogInformation("{0} Disconnected from the server.", UserName);
         return base.OnDisconnectedAsync(exception);
     } 
 
@@ -37,10 +38,17 @@ public class ChatHubServer : BaseHub<IChatHub>
     {
         var context = new ReceiveMessageContext(idChat,UserId, UserName!, message);
 
-        var contractMessage = new SendMessage(idChat, UserId, message);
+        var messageContext = new ContextMessage(idChat, UserId, message);
+        var contractMessage = new SendMessage(messageContext);
+
         await _context.PublishMessage(contractMessage).ConfigureAwait(false);
 
-        var client = Clients.GroupExcept(idChat.ToString(), Context.ConnectionId);
+        IChatHub client = Clients.GroupExcept(idChat.ToString(), Context.ConnectionId);
         await client.ReceiveMessage(context);
     }
+
+    public async Task AckMessage(Guid IdMessage)    
+       => await _context.PublishMessage<MessageReceived>(new(IdMessage, UserId))
+            .ConfigureAwait(false);
+    
 }

@@ -23,8 +23,7 @@ internal sealed class SendMessageHandlerConsumer : ConsumerHandlerBase<SendMessa
 
     public override async Task Consumer(IConsumerContext<SendMessage> context)
     {
-        var @event = new SendMessageChat(context.Message.IdChat, 
-            context.Message.Sender, context.Message.Text);
+        var @event = new SendMessageChat(context.Message.Context);
 
         await _chatProcess.Include(@event).ConfigureAwait(false);
         context.NotifyConsumed();

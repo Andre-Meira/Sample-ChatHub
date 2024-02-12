@@ -1,4 +1,5 @@
 ﻿using Sample.ChatHub.Domain.Abstracts.EventStream;
+using Sample.ChatHub.Domain.Contracts.Messages;
 
 namespace Sample.ChatHub.Core.Chat;
 
@@ -7,7 +8,7 @@ public record ChatHub : IAggregateStream<IChatEventStream>
     public ChatHub()
     {
         Users = new List<Guid>();
-        Messages = new List<Message>(); 
+        Messages = new List<ContextMessage>(); 
     }
 
     public Guid ChatId { get; private set; }
@@ -15,7 +16,7 @@ public record ChatHub : IAggregateStream<IChatEventStream>
     public Guid UserCreated { get; set; }
 
     public List<Guid> Users { get; private set; }
-    public List<Message> Messages { get; private set; }
+    public List<ContextMessage> Messages { get; private set; }
 
     public void Apply(IChatEventStream @event) => @event.Process(this);
     
@@ -46,9 +47,9 @@ public record ChatHub : IAggregateStream<IChatEventStream>
         ChatId = id;
     }
         
-    public void SendMessage(Message message)
+    public void SendMessage(ContextMessage message)
     {
-        bool UserExist = Users.Contains(message.UserId);
+        bool UserExist = Users.Contains(message.IdSender);
 
         if (UserExist == false)
         {

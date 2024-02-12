@@ -1,7 +1,5 @@
 ﻿using Moq;
-using Sample.ChatHub.Core.Chat;
 using Sample.ChatHub.Core.Chat.Events;
-using System.Text;
 
 namespace Sample.ChatHub.Core.Tests.Chat;
 
@@ -54,7 +52,7 @@ public class Chat_Tests_Fail
         await _chatProcess.Include(chatCreated);
 
         string message = "Primeira message do chat";
-        SendMessageChat sendMessageChat = new SendMessageChat(chatCreated.IdCorrelation, IdUser, message);
+        SendMessageChat sendMessageChat = new SendMessageChat(new (IdChat, IdUser, message));
 
         await Assert.ThrowsAsync<ArgumentException>(() =>
         {
