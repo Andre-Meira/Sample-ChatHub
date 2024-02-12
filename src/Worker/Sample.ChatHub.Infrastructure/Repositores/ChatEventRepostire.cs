@@ -12,7 +12,7 @@ internal class ChatEventsRepostiore : IChatEventsRepositore
 
     public IEnumerable<IChatEventStream> GetEvents(Guid idPayment)
     {       
-        FilterDefinition<EventStreamBD> filter = Builders<EventStreamBD>.Filter
+        FilterDefinition<ChatEventStreamDB> filter = Builders<ChatEventStreamDB>.Filter
             .Eq(x => x.Event.IdCorrelation, idPayment);
 
         List<IChatEventStream> events = _context.Eventos.Find(filter)
@@ -24,6 +24,6 @@ internal class ChatEventsRepostiore : IChatEventsRepositore
     }
 
     public Task IncressEvent(IChatEventStream @event) 
-        => _context.Eventos.InsertOneAsync(new EventStreamBD(@event));
+        => _context.Eventos.InsertOneAsync(new ChatEventStreamDB(@event));
 
 }

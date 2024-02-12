@@ -4,9 +4,9 @@ using System.Runtime.Serialization;
 
 namespace Sample.ChatHub.Infrastructure.Models;
 
-internal class EventStreamBD
+internal class ChatEventStreamDB
 {
-    public EventStreamBD(IEventStream @event)
+    public ChatEventStreamDB(IEventStream @event)
     {
         Event = @event;
         IdCorrelation = @event.IdCorrelation.ToString(); 

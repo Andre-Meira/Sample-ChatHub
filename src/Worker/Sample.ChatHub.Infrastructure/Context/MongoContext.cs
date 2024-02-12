@@ -12,8 +12,8 @@ namespace Sample.ChatHub.Infrastructure.Context;
 internal sealed class MongoContext
 {
     private readonly IMongoDatabase _database;
-    public IMongoCollection<EventStreamBD> Eventos
-        => _database.GetCollection<EventStreamBD>("Eventos");
+    public IMongoCollection<ChatEventStreamDB> Eventos
+        => _database.GetCollection<ChatEventStreamDB>("Chat");
 
     public MongoContext(IOptions<MongoOptions> options)
     {

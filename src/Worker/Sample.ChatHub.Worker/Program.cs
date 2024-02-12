@@ -3,8 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using Sample.ChatHub.Bus;
+using Sample.ChatHub.Core.Chat;
 using Sample.ChatHub.Domain.Abstracts.Options;
+using Sample.ChatHub.Infrastructure;
 using Sample.ChatHub.Worker;
+using Sample.ChatHub.Worker.Consumers;
 
 public class Program
 {
@@ -37,12 +40,17 @@ public class Program
              })                       
            .ConfigureServices((hostContext, services) =>
            {
+                services.AddScoped<IChatProcessStream,ChatProcessStream>();
+                services.ConfigureInfrastructure();               
+                               
                 services.AddOptions();
                 services.Configure<BusOptions>(hostContext.Configuration.GetSection(BusOptions.Key));
                 services.Configure<MongoOptions>(hostContext.Configuration.GetSection(MongoOptions.Key));                
                 services.AddBus(connectionFactory);
 
                 services.AddHostedService<CreateChatHandlerConsumer>();
+                services.AddHostedService<SendMessageHandlerConsumer>();
+                services.AddHostedService<UserJoinChatHandlerConsummer>();
            });
     }
        
