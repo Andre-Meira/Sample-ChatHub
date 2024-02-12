@@ -34,7 +34,7 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
         if(userValid is null) AuthenticateResult.Fail("Usuario não é valido.");
 
         Claim claimName = new Claim(ClaimTypes.Name, user.Name);
-        Claim claimID = new Claim(ClaimTypes.Sid, user.Id);
+        Claim claimID = new Claim(ClaimTypes.NameIdentifier, user.Id);
 
         ClaimsIdentity identity = new ClaimsIdentity(new[] {claimName, claimID}, Schema);                
 
