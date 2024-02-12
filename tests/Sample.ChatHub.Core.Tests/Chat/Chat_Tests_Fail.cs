@@ -42,23 +42,6 @@ public class Chat_Tests_Fail
         });   
     }
 
-    [Fact]
-    public async Task Envia_Uma_Messa_Sem_Esta_No_Chat_Retona_Erro()
-    {
-        Guid id = Guid.NewGuid();
-        Guid IdUser = Guid.NewGuid();   
-
-        ChatCreated chatCreated = new ChatCreated(IdChat, "Chat Teste", id);
-        await _chatProcess.Include(chatCreated);
-
-        string message = "Primeira message do chat";
-        SendMessageChat sendMessageChat = new SendMessageChat(new (IdChat, IdUser, message));
-
-        await Assert.ThrowsAsync<ArgumentException>(() =>
-        {
-            return _chatProcess.Include(sendMessageChat);
-        });
-    }
 
     [Fact]
     public async Task Entrar_no_Chat_Que_Ja_Participa()

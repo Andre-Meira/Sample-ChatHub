@@ -1,13 +1,13 @@
 version: '3.6'
 
 services:
-  sample.chathub.api:
-    image: ${DOCKER_REGISTRY-}samplechathub
-    restart: unless-stopped
-    container_name: sample-chathub
-    build:
-      context: .
-      dockerfile: src/Sample.ChatHub.API/Dockerfile
+  # sample.chathub.api:
+  #   image: ${DOCKER_REGISTRY-}samplechathub
+  #   restart: unless-stopped
+  #   container_name: sample-chathub
+  #   build:
+  #     context: .
+  #     dockerfile: src/Sample.ChatHub.API/Dockerfile
     
   rabbitmq:
     image: rabbitmq:management

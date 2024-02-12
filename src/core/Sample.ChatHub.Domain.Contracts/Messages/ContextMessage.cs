@@ -2,7 +2,7 @@
 
 public record ContextMessage
 {
-    public ContextMessage(Guid idChat,Guid idSender, string text)
+    public ContextMessage(Guid idChat,Guid idSender, string Name,string text)
     {
         Text = text;
         IdSender = idSender;

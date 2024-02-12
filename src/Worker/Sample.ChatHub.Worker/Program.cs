@@ -30,17 +30,18 @@ public class Program
         
 
         return Host.CreateDefaultBuilder(args)
-             .ConfigureAppConfiguration(appConfig =>
-             {
-                 var configuration = new ConfigurationBuilder()
-                     .SetBasePath(Directory.GetCurrentDirectory())
-                     .AddJsonFile("appsettings.json", false, true)
-                     .Build();
-                 appConfig.AddConfiguration(configuration);
-             })                       
-           .ConfigureServices((hostContext, services) =>
-           {
+            .ConfigureAppConfiguration(appConfig =>
+            {
+                var configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", false, true)
+                    .Build();
+                appConfig.AddConfiguration(configuration);
+            })                       
+            .ConfigureServices((hostContext, services) =>
+            {
                 services.AddScoped<IChatProcessStream,ChatProcessStream>();
+                services.AddScoped<IMessageProcessStream, MessageProcessStream>();
                 services.ConfigureInfrastructure();               
                                
                 services.AddOptions();
@@ -51,7 +52,8 @@ public class Program
                 services.AddHostedService<CreateChatHandlerConsumer>();
                 services.AddHostedService<SendMessageHandlerConsumer>();
                 services.AddHostedService<UserJoinChatHandlerConsummer>();
-           });
+                services.AddHostedService<SyncMessageHandler>();
+            });
     }
        
 }

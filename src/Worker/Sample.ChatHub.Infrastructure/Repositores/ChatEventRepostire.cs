@@ -10,20 +10,20 @@ internal class ChatEventsRepostiore : IChatEventsRepositore
     private readonly MongoContext _context;
     public ChatEventsRepostiore(MongoContext context) => _context = context;
 
-    public IEnumerable<IChatEventStream> GetEvents(Guid idPayment)
+    public IEnumerable<IChatEventStream> GetEvents(Guid idCorrelation)
     {       
         FilterDefinition<ChatEventStreamDB> filter = Builders<ChatEventStreamDB>.Filter
-            .Eq(x => x.Event.IdCorrelation, idPayment);
+            .Eq(x => x.IdCorrelation, idCorrelation.ToString());
 
-        List<IChatEventStream> events = _context.Eventos.Find(filter)
+        List<IChatEventStream> events = _context.Chat.Find(filter)
             .ToList()
             .OrderBy(e => e.Event.DataProcessed)
-            .Select(e => (IChatEventStream)e.Event).ToList();
+            .Select(e => e.Event).ToList();
 
         return events;
     }
 
     public Task IncressEvent(IChatEventStream @event) 
-        => _context.Eventos.InsertOneAsync(new ChatEventStreamDB(@event));
+        => _context.Chat.InsertOneAsync(new ChatEventStreamDB(@event));
 
 }

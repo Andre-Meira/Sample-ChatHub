@@ -20,12 +20,12 @@ public class ChatHubServer : BaseHub<IChatHub>
 
     public override async Task OnConnectedAsync()
     {
-        _logger.LogInformation("{0} Connected from the server.", UserName);
+        _logger.LogInformation("{0} Connected from the server.", UserName);        
 
-        await _context.PublishMessage<SyncUserMessage>(new(UserId)).ConfigureAwait(false);
-
-        var context = new ReceiveMessageContext(Guid.Empty, Guid.Empty, "Sistema", $"Bem vindo ao chat {UserName!}");        
+        var context = new ContextMessage(Guid.Empty, Guid.Empty, "Sistema",$"Bem vindo ao chat {UserName!}");        
         await Clients.Client(Context.ConnectionId).ReceiveMessage(context);
+
+        await _context.PublishMessage<SyncUserMessage>(new(UserId));
     }
 
     public override Task OnDisconnectedAsync(Exception? exception)
@@ -35,20 +35,18 @@ public class ChatHubServer : BaseHub<IChatHub>
     } 
 
     public async Task SendMessage(Guid idChat, string message)
-    {
-        var context = new ReceiveMessageContext(idChat,UserId, UserName!, message);
-
-        var messageContext = new ContextMessage(idChat, UserId, message);
+    {        
+        var messageContext = new ContextMessage(idChat, UserId, UserName!,message);
         var contractMessage = new SendMessage(messageContext);
 
         await _context.PublishMessage(contractMessage).ConfigureAwait(false);
 
         IChatHub client = Clients.GroupExcept(idChat.ToString(), Context.ConnectionId);
-        await client.ReceiveMessage(context);
+        await client.ReceiveMessage(messageContext);
     }
 
-    public async Task AckMessage(Guid IdMessage)    
-       => await _context.PublishMessage<MessageReceived>(new(IdMessage, UserId))
+    public async Task AckMessage(Guid IdChat, Guid IdMessage)    
+       => await _context.PublishMessage<MessageReceived>(new(IdChat, IdMessage, UserId))
             .ConfigureAwait(false);
     
 }
