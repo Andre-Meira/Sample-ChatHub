@@ -15,7 +15,12 @@ namespace Sample.ChatHub.API.Controllers.v1;
 [ApiController]
 public class ChatHubController : DefaultController
 {
-    private readonly IPublishContext _context;    
+    private readonly IPublishContext _context;
+
+    public ChatHubController(IPublishContext context)
+    {
+        _context = context;
+    }
 
     [HttpPost("Create")]
     [Produces("application/json")]
