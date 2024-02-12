@@ -50,7 +50,7 @@ public class Chat_Tests_Sucess
         ChatCreated chatCreated = new ChatCreated(IdChat, "Chat Teste", id);
         await _chatProcess.Include(chatCreated);
 
-        byte[] message = Encoding.UTF8.GetBytes("Primeira message do chat");
+        string message = "Primeira message do chat";
         SendMessageChat sendMessageChat = new SendMessageChat(chatCreated.IdCorrelation, id, message);
         await _chatProcess.Include(sendMessageChat);
 

@@ -3,7 +3,7 @@ namespace Sample.ChatHub.Core.Chat.Events;
 
 public class SendMessageChat : IChatEventStream
 {
-    public SendMessageChat(Guid chatId,Guid userId, byte[] message)
+    public SendMessageChat(Guid chatId,Guid userId, string message)
     {
         IdCorrelation = chatId;
         Message = new Message(message, userId);

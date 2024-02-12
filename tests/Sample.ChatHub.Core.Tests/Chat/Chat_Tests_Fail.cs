@@ -53,7 +53,7 @@ public class Chat_Tests_Fail
         ChatCreated chatCreated = new ChatCreated(IdChat, "Chat Teste", id);
         await _chatProcess.Include(chatCreated);
 
-        byte[] message = Encoding.UTF8.GetBytes("Primeira message do chat");
+        string message = "Primeira message do chat";
         SendMessageChat sendMessageChat = new SendMessageChat(chatCreated.IdCorrelation, IdUser, message);
 
         await Assert.ThrowsAsync<ArgumentException>(() =>
