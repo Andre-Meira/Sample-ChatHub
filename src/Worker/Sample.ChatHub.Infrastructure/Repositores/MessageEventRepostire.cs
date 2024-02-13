@@ -26,20 +26,19 @@ internal class MessageEventsRepostiore : IMessageEventsRepositore
         return events;
     }
 
-    public IEnumerable<Guid> GetMessagesToBeConfirmed(Guid IdChat, Guid IdUser)
+    public IEnumerable<Guid> GetMessagesToBeConfirmed(Guid IdUser)
     {
         var filter = Builders<MessageEventStreamDB>.Filter;
-        
-        var builderPrincipal =
-            filter.Where(e => e.IdChat == IdChat.ToString()) &
-            filter.Eq(e => e._t, nameof(ReceivedMessage));
-            filter.Not(filter.Eq("Event.UserID", IdUser.ToString()));
-        
-        
-        var events = _context.Message.Find(builderPrincipal)
-            .ToList().Select(e => e.Event.IdCorrelation);
-            
-        return events;
+
+        var builderPrincipal = filter.Not(filter.Eq("Event.IdSender", IdUser.ToString())) 
+                               & filter.Not(filter.Eq("Event.UserID", IdUser.ToString()))
+                               & filter.Where(e => e.Event is SendMessageChat);
+
+        var events = _context.Message.Find(builderPrincipal);
+         
+        return events.ToList()
+            .OrderBy(e => e.Event.DataProcessed)
+            .Select(e => e.Event.IdCorrelation);
     }
 
     public Task IncressEvent(IMessageEventStream @event) 

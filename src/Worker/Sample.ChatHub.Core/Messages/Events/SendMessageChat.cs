@@ -8,6 +8,7 @@ public class SendMessageChat : IMessageEventStream
     {
         IdCorrelation = context.IdMessage;
         IdChat = context.IdChat;
+        IdSender = context.IdSender;
 
         Message = context;
         DataProcessed = DateTime.Now;
@@ -17,6 +18,7 @@ public class SendMessageChat : IMessageEventStream
     public DateTime DataProcessed { get; init; }
     public ContextMessage Message { get; init; }
     public Guid IdChat { get; init; }
+    public Guid IdSender { get; init; }
 
     public void Process(MessageHub chat)
     {

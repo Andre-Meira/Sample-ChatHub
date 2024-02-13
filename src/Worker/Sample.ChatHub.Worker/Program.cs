@@ -6,8 +6,10 @@ using Sample.ChatHub.Bus;
 using Sample.ChatHub.Core.Chat;
 using Sample.ChatHub.Domain.Abstracts.Options;
 using Sample.ChatHub.Infrastructure;
+using Sample.ChatHub.Server.API.Protos;
 using Sample.ChatHub.Worker;
 using Sample.ChatHub.Worker.Consumers;
+using Sample.ChatHub.Worker.Services;
 
 public class Program
 {
@@ -40,6 +42,11 @@ public class Program
             })                       
             .ConfigureServices((hostContext, services) =>
             {
+                services.AddGrpcClient<UserSync.UserSyncClient>("SyncUser", e =>
+                {
+                    e.Address = new("http://localhost:5002");
+                });
+
                 services.AddScoped<IChatProcessStream,ChatProcessStream>();
                 services.AddScoped<IMessageProcessStream, MessageProcessStream>();
                 services.ConfigureInfrastructure();               
@@ -52,6 +59,7 @@ public class Program
                 services.AddHostedService<CreateChatHandlerConsumer>();
                 services.AddHostedService<SendMessageHandlerConsumer>();
                 services.AddHostedService<UserJoinChatHandlerConsummer>();
+                services.AddHostedService<MessageReceivedHandlerConsumer>();
                 services.AddHostedService<SyncMessageHandler>();
             });
     }

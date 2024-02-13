@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "Sample.ChatHub.Server.API.Protos";
+
+
+service UserSync{
+	rpc SyncMessage(SyncMessageRequest) returns(google.protobuf.BoolValue);
+}
+
+
+message SyncMessageRequest{
+	string UserId = 1;
+	repeated ChatMessageList ChatList = 2;
+}
+
+message ChatMessageList{
+	string IdChat = 1;
+	repeated MessageList list = 2; 
+}
+
+message MessageList{
+	string MessageId = 1; 
+	string SenderId = 2;
+	string Text = 3;
+}

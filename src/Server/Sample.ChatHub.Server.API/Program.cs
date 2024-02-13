@@ -3,6 +3,7 @@ using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
 using Sample.ChatHub.Bus;
 using Sample.ChatHub.Server.API;
+using Sample.ChatHub.Server.API.Services;
 
 var connectionFactory = new ConnectionFactory();
 connectionFactory.Password = "guest";
@@ -14,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOptions();
 builder.Services.Configure<UserSettings>(builder.Configuration.GetSection("Users"));
 
+builder.Services.AddGrpc();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -57,6 +59,8 @@ builder.Services.AddBus(connectionFactory);
 builder.Services.AddSignalR();
 
 var app = builder.Build();
+
+app.MapGrpcService<SyncMessageProtoHandler>();
 
 app.UseSwagger();
 app.UseSwaggerUI();

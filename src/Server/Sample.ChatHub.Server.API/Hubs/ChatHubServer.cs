@@ -20,7 +20,10 @@ public class ChatHubServer : BaseHub<IChatHub>
 
     public override async Task OnConnectedAsync()
     {
-        _logger.LogInformation("{0} Connected from the server.", UserName);        
+        _logger.LogInformation("{0} Connected from the server.", UserName);
+        Guid guid = Guid.Parse("07718859-6209-464e-891c-c761035d9980");
+
+        await Groups.AddToGroupAsync(Context.ConnectionId, guid.ToString());
 
         var context = new ContextMessage(Guid.Empty, Guid.Empty, "Sistema",$"Bem vindo ao chat {UserName!}");        
         await Clients.Client(Context.ConnectionId).ReceiveMessage(context);

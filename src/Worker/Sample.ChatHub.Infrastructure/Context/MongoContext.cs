@@ -38,8 +38,20 @@ internal sealed class MongoContextConfiguration
         BsonClassMap.RegisterClassMap<UserJoinedChat>();
         BsonClassMap.RegisterClassMap<UserLeftChat>();
 
-        BsonClassMap.RegisterClassMap<SendMessageChat>();
-        BsonClassMap.RegisterClassMap<ReceivedMessage>();
+        BsonClassMap.RegisterClassMap<SendMessageChat>(e =>
+        {
+            e.AutoMap();
+            e.MapProperty(x => x.IdChat).SetSerializer(new GuidSerializer(BsonType.String));
+            e.MapProperty(x => x.IdSender).SetSerializer(new GuidSerializer(BsonType.String));
+        });        
+
+        BsonClassMap.RegisterClassMap<ReceivedMessage>(e =>
+        {
+            e.AutoMap();
+
+            e.MapProperty(x => x.UserID).SetSerializer(new GuidSerializer(BsonType.String));
+            e.MapProperty(x => x.MessageId).SetSerializer(new GuidSerializer(BsonType.String));
+            e.MapProperty(x => x.IdChat).SetSerializer(new GuidSerializer(BsonType.String));
+        });
     }
 }
-

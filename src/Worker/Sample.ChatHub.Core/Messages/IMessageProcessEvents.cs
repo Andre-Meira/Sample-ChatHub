@@ -3,7 +3,10 @@ using Sample.ChatHub.Worker.Core.Messages;
 
 namespace Sample.ChatHub.Core.Chat;
 
-public interface IMessageProcessStream : IProcessorEventStream<MessageHub, IMessageEventStream>;
+public interface IMessageProcessStream : IProcessorEventStream<MessageHub, IMessageEventStream>
+{
+    Task<IEnumerable<MessageHub>> GetMessagesToBeConfirmed(Guid User);
+}
 
 
 public sealed class MessageProcessStream : IMessageProcessStream
@@ -20,6 +23,21 @@ public sealed class MessageProcessStream : IMessageProcessStream
     public IEnumerable<IMessageEventStream> GetEvents(Guid Id)
     {
         return _messageEvents.GetEvents(Id);
+    }
+
+    public async Task<IEnumerable<MessageHub>> GetMessagesToBeConfirmed(Guid User)
+    {
+        IEnumerable<Guid> idMessages = _messageEvents.GetMessagesToBeConfirmed(User);
+
+        List<MessageHub> messageHubs = new List<MessageHub>();
+
+        await Parallel.ForEachAsync(idMessages, async (Guid id, CancellationToken cancellation) =>
+        {
+            var messageHub = await Process(id);
+            messageHubs.Add(messageHub);
+        });
+
+        return messageHubs;
     }
 
     public async Task Include(IMessageEventStream @event)
