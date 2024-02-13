@@ -9,7 +9,7 @@ public class ReceivedMessage : IMessageEventStream
         MessageId = messageId;
         UserID = userID;
 
-        IdChat = IdChat;
+        IdChat = idChat;
         IdCorrelation = messageId;
         DataProcessed = DateTime.Now;
     }
