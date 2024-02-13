@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json.Linq;
 using RabbitMQ.Client;
 using Sample.ChatHub.Bus;
 using Sample.ChatHub.Core.Chat;
@@ -42,10 +43,22 @@ public class Program
             })                       
             .ConfigureServices((hostContext, services) =>
             {
-                services.AddGrpcClient<UserSync.UserSyncClient>("SyncUser", e =>
+                services.AddGrpcClient<UserSync.UserSyncClient>(e =>
                 {
                     e.Address = new("http://localhost:5002");
+                    
+                    e.ChannelOptionsActions.Add((opt) =>
+                    {
+                        opt.UnsafeUseInsecureChannelCallCredentials = true;
+                    });
+                })
+                .AddCallCredentials((context, metadata) =>
+                {                    
+                    metadata.Add("Authorization", $"Basic c2lzdGVtYTphNTE5OTlmZS0zZTg1LTQ3YmItOTRjZS1mMmMyY2Y2YmQ2N2U=");
+                    return Task.CompletedTask;
                 });
+
+                services.AddScoped<SyncMessageService>();
 
                 services.AddScoped<IChatProcessStream,ChatProcessStream>();
                 services.AddScoped<IMessageProcessStream, MessageProcessStream>();

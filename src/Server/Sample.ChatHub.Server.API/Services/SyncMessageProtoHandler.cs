@@ -24,19 +24,16 @@ public class SyncMessageProtoHandler : UserSync.UserSyncBase
         IChatHub userChat = _hub.Clients.User(request.UserId);
         CancellationToken cancellationToken = context.CancellationToken; 
 
-        foreach (ChatMessageList chat in request.ChatList)
+        foreach (MessageList msg in request.Messages)
         {
-            Guid chatId = Guid.Parse(chat.IdChat);
+            Guid chatId = Guid.Parse(msg.IdChat);
 
-            await Parallel.ForEachAsync(chat.List, async (MessageList message, CancellationToken cancellation) =>
-            {
-                User user = _usersOptions.FirstOrDefault(e => e.Id == request.UserId)!;
+            User user = _usersOptions.FirstOrDefault(e => e.Id == msg.SenderId)!;
 
-                var contextMessage = new ContextMessage(chatId, Guid.Parse(user.Id),
-                    user.Name, message.Text);
+            var contextMessage = new ContextMessage(chatId, 
+                Guid.Parse(msg.SenderId), user.Name, msg.Text);
 
-                await userChat.ReceiveMessage(contextMessage);
-            });
+            await userChat.ReceiveMessage(contextMessage);
         }
 
         return new BoolValue{ Value = true };

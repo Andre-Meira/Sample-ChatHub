@@ -30,9 +30,8 @@ internal class MessageEventsRepostiore : IMessageEventsRepositore
     {
         var filter = Builders<MessageEventStreamDB>.Filter;
 
-        var builderPrincipal = filter.Not(filter.Eq("Event.IdSender", IdUser.ToString())) 
-                               & filter.Not(filter.Eq("Event.UserID", IdUser.ToString()))
-                               & filter.Where(e => e.Event is SendMessageChat);
+        var builderPrincipal = filter.Not(filter.Eq("Event.UserID", IdUser.ToString()))
+                               & filter.Not(filter.Eq("Event.IdSender", IdUser.ToString()));                               
 
         var events = _context.Message.Find(builderPrincipal);
          

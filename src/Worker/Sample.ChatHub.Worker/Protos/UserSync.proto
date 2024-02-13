@@ -12,16 +12,12 @@ service UserSync{
 
 message SyncMessageRequest{
 	string UserId = 1;
-	repeated ChatMessageList ChatList = 2;
-}
-
-message ChatMessageList{
-	string IdChat = 1;
-	repeated MessageList list = 2; 
+	repeated MessageList Messages = 2;
 }
 
 message MessageList{
-	string MessageId = 1; 
-	string SenderId = 2;
-	string Text = 3;
+	string IdChat = 1;
+	string MessageId = 2; 
+	string SenderId = 3;
+	string Text = 4;
 }

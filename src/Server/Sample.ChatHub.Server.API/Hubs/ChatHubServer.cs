@@ -21,7 +21,7 @@ public class ChatHubServer : BaseHub<IChatHub>
     public override async Task OnConnectedAsync()
     {
         _logger.LogInformation("{0} Connected from the server.", UserName);
-        Guid guid = Guid.Parse("07718859-6209-464e-891c-c761035d9980");
+        Guid guid = Guid.Parse("d9a764ec-1fdc-4648-8099-a70ca51af917");
 
         await Groups.AddToGroupAsync(Context.ConnectionId, guid.ToString());
 
