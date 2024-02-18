@@ -51,4 +51,6 @@ builder.Services.AddHostedService<SyncMessageHandler>();
 
 var app = builder.Build();
 
+app.MapGrpcService<UserInfoProtoHandler>();
+
 app.Run();

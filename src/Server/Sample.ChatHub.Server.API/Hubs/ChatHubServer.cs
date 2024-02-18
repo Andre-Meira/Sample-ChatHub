@@ -11,19 +11,20 @@ public class ChatHubServer : BaseHub<IChatHub>
 {
     private readonly ILogger<ChatHubServer> _logger;
     private readonly IPublishContext _context;
+    private readonly IUserService _userService;
 
-    public ChatHubServer(ILogger<ChatHubServer> logger, IPublishContext context)
+    public ChatHubServer(ILogger<ChatHubServer> logger,
+        IPublishContext context, IUserService userService)
     {
         _logger = logger;
         _context = context;
+        _userService = userService;
     }
 
     public override async Task OnConnectedAsync()
     {
         _logger.LogInformation("{0} Connected from the server.", UserName);
-        Guid guid = Guid.Parse("d9a764ec-1fdc-4648-8099-a70ca51af917");
-
-        await Groups.AddToGroupAsync(Context.ConnectionId, guid.ToString());
+        await this.SetChannelAsync();
 
         var context = new ContextMessage(Guid.Empty, Guid.Empty, "Sistema",$"Bem vindo ao chat {UserName!}");        
         await Clients.Client(Context.ConnectionId).ReceiveMessage(context);
@@ -52,4 +53,14 @@ public class ChatHubServer : BaseHub<IChatHub>
        => await _context.PublishMessage<MessageReceived>(new(IdChat, IdMessage, UserId))
             .ConfigureAwait(false);
     
+
+    private async Task SetChannelAsync()
+    {
+        UserChats userChats =  await _userService.GetUserChats(UserId);
+
+        foreach (string chat in userChats.IdChats)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, chat);
+        }
+    }
 }

@@ -5,10 +5,10 @@ public record UserChats
     public UserChats(Guid userId)
     {
         UserId = userId;
-        IdChats = new List<Guid>();
+        IdChats = new List<string>();
     }
 
     public Guid UserId { get; init; }
-    public List<Guid> IdChats {get; set;}
+    public List<string> IdChats {get; set;}
 }
 

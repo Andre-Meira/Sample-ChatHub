@@ -23,6 +23,11 @@ internal class ChatEventsRepostiore : IChatEventsRepositore
         return events;
     }
 
+    public Task<IEnumerable<Guid>> GetUserChats(Guid userId)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task IncressEvent(IChatEventStream @event) 
         => _context.Chat.InsertOneAsync(new ChatEventStreamDB(@event));
 

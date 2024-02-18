@@ -10,12 +10,12 @@ public interface IUserService
     Task<UserChats> GetUserChats(Guid idUser);        
 }
 
-class UserHandler : IUserService
+class UserService : IUserService
 {
     private IDistributedCache _cache;    
     private readonly UserInfo.UserInfoClient _userClient;
 
-    public UserHandler(IDistributedCache cache, 
+    public UserService(IDistributedCache cache, 
         
         UserInfo.UserInfoClient userClient)
     {
@@ -47,7 +47,7 @@ class UserHandler : IUserService
 
         foreach (string chat in reponse.ChatsID)
         {
-            userChat.IdChats.Add(Guid.Parse(chat));
+            userChat.IdChats.Add(chat);
         }
 
         return userChat;

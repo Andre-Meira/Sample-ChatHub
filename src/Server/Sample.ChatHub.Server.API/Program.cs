@@ -4,6 +4,7 @@ using RabbitMQ.Client;
 using Sample.ChatHub.Bus;
 using Sample.ChatHub.Server.API;
 using Sample.ChatHub.Server.API.Services;
+using Sample.ChatHub.Woker.API.Protos;
 
 var connectionFactory = new ConnectionFactory();
 connectionFactory.Password = "guest";
@@ -12,10 +13,21 @@ connectionFactory.HostName = "localhost";
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddGrpcClient<UserInfo.UserInfoClient>(e =>
+{
+    e.Address = new("http://localhost:5003");
+    
+    e.ChannelOptionsActions.Add((opt) =>
+    {
+        opt.UnsafeUseInsecureChannelCallCredentials = true;
+    });
+});
+
 builder.Services.AddOptions();
 builder.Services.Configure<UserSettings>(builder.Configuration.GetSection("Users"));
 
 builder.Services.AddGrpc();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
