@@ -3,14 +3,8 @@ using Sample.ChatHub.Bus;
 using Sample.ChatHub.Core.Chat.Events;
 using Sample.ChatHub.Core.Chat;
 using Sample.ChatHub.Domain.Contracts.Chat;
-using Sample.ChatHub.Domain.Contracts.Messages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Sample.ChatHub.Worker.Consumers;
+namespace Sample.ChatHub.Worker.API.Consumers;
 
 internal class UserJoinChatHandlerConsummer : ConsumerHandlerBase<UserJoinChat>
 {

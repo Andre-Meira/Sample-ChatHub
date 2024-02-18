@@ -1,13 +1,11 @@
-﻿using Amazon.Runtime.Internal.Transform;
-using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 using Sample.ChatHub.Bus;
 using Sample.ChatHub.Core.Chat;
 using Sample.ChatHub.Domain.Contracts.Messages;
+using Sample.ChatHub.Worker.API.Services;
 using Sample.ChatHub.Worker.Core.Messages;
-using Sample.ChatHub.Worker.Services;
 
-namespace Sample.ChatHub.Worker;
+namespace Sample.ChatHub.Worker.API;
 
 internal class SyncMessageHandler : ConsumerHandlerBase<SyncUserMessage>
 {

@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <None Remove="Protos\UserSync.proto" />
+    <None Remove="Protos\UserInfo.proto" />
   </ItemGroup>
 
   <ItemGroup>    
@@ -29,6 +30,7 @@
 
   <ItemGroup>
     <Protobuf Include="Protos\UserSync.proto" />
+    <Protobuf Include="Protos\UserInfo.proto" />
   </ItemGroup>  
 
 </Project>

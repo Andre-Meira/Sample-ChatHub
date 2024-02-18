@@ -3,7 +3,7 @@ using Grpc.Net.ClientFactory;
 using Sample.ChatHub.Server.API.Protos;
 using Sample.ChatHub.Worker.Core.Messages;
 
-namespace Sample.ChatHub.Worker.Services;
+namespace Sample.ChatHub.Worker.API.Services;
 
 internal sealed class SyncMessageService 
 {

@@ -1,13 +1,13 @@
 version: '3.6'
 
 services:
-  sample.chathub.api:
-    image: ${DOCKER_REGISTRY-}samplechathub
-    restart: unless-stopped
-    container_name: sample-chathub.api
-    build:
-      context: .
-      dockerfile: src/Server/Sample.ChatHub.API/Dockerfile
+#  sample.chathub.api:
+#    image: ${DOCKER_REGISTRY-}samplechathub
+#    restart: unless-stopped
+#    container_name: sample-chathub.api
+#    build:
+#      context: .
+#      dockerfile: src/Server/Sample.ChatHub.API/Dockerfile
 
   cache:
     image: redis
@@ -16,9 +16,7 @@ services:
     ports:
       - '6379:6379'
     command: --loglevel warning
-    volumes: 
-      - cache:/data
-    
+   
   rabbitmq:
     image: rabbitmq:management
     restart: unless-stopped
