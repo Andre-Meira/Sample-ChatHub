@@ -12,6 +12,7 @@ public class MessageEventStreamDB
 
         IdChat = @event.IdChat.ToString();  
         IdCorrelation = @event.IdCorrelation.ToString();
+        UserId = @event.UserId.ToString();
     }
 
     [BsonId]
@@ -24,6 +25,8 @@ public class MessageEventStreamDB
     public IMessageEventStream Event { get; set; }
 
     public string IdCorrelation { get; init; }
+
+    public string UserId { get; init; }    
 
     public string IdChat { get; init; }
 }

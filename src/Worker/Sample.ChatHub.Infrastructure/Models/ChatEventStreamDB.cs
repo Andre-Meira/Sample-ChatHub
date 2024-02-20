@@ -10,7 +10,9 @@ internal class ChatEventStreamDB
     public ChatEventStreamDB(IChatEventStream @event)
     {
         Event = @event;
-        IdCorrelation = @event.IdCorrelation.ToString(); 
+        IdCorrelation = @event.IdCorrelation.ToString();                 
+        UserId = @event.UserId.ToString();
+        EventName = nameof(EventName);
     }
 
     [BsonId]
@@ -20,7 +22,11 @@ internal class ChatEventStreamDB
     [DataMember]
     public MongoDB.Bson.BsonString? _t { get; set; } 
 
+    public string EventName { get; init; }
+
     public IChatEventStream Event { get; set; }
 
     public string IdCorrelation { get; init; }
+
+    public string UserId { get; init; }    
 }

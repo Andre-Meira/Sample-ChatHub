@@ -11,7 +11,6 @@ public record UserLeftChat : IChatEventStream
     }
 
     public Guid UserId { get; init; }
-
     public Guid IdCorrelation { get; init; }
     public DateTime DataProcessed { get; init; }
 

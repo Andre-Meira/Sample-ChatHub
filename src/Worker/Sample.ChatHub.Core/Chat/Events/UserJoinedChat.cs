@@ -4,16 +4,15 @@ public record class UserJoinedChat : IChatEventStream
 {
     public UserJoinedChat(Guid chatId, Guid idUser)
     {
-        IdUser = idUser;
+        UserId = idUser;
 
         IdCorrelation = chatId;
         DataProcessed = DateTime.Now;
-    }
-
-    public Guid IdUser { get; init; }
+    }    
 
     public Guid IdCorrelation { get; init; }
     public DateTime DataProcessed { get; init; }
+    public Guid UserId { get; init; }
 
-    public void Process(ChatHub chat) => chat.AddUser(IdUser);    
+    public void Process(ChatHub chat) => chat.AddUser(UserId);    
 }
