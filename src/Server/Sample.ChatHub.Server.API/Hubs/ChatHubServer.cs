@@ -43,10 +43,15 @@ public class ChatHubServer : BaseHub<IChatHub>
         var messageContext = new ContextMessage(idChat, UserId, UserName!,message);
         var contractMessage = new SendMessage(messageContext);
 
-        await _context.PublishMessage(contractMessage).ConfigureAwait(false);
+        UserChats userChats = await _userService.GetUserChats(UserId);
 
-        IChatHub client = Clients.GroupExcept(idChat.ToString(), Context.ConnectionId);
-        await client.ReceiveMessage(messageContext);
+        if (userChats.IdChats.Contains(idChat.ToString()))
+        {
+            await _context.PublishMessage(contractMessage).ConfigureAwait(false);
+
+            IChatHub client = Clients.GroupExcept(idChat.ToString(), Context.ConnectionId);
+            await client.ReceiveMessage(messageContext);   
+        }        
     }
 
     public async Task AckMessage(Guid IdChat, Guid IdMessage)    
@@ -56,7 +61,7 @@ public class ChatHubServer : BaseHub<IChatHub>
 
     private async Task SetChannelAsync()
     {
-        UserChats userChats =  await _userService.GetUserChats(UserId);
+        UserChats userChats =  await _userService.GetUserChats(UserId);        
 
         foreach (string chat in userChats.IdChats)
         {
