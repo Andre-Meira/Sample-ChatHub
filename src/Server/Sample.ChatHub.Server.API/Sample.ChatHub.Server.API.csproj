@@ -17,6 +17,7 @@
 
   <ItemGroup>    
     <PackageReference Include="Grpc.AspNetCore" Version="2.60.0" />    
+    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />    
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Rabbitmq.Client" Version="6.8.1" />

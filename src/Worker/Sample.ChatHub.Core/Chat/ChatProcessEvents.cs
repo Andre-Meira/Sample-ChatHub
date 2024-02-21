@@ -2,7 +2,10 @@
 
 namespace Sample.ChatHub.Core.Chat;
 
-public interface IChatProcessStream : IProcessorEventStream<ChatHub, IChatEventStream>;
+public interface IChatProcessStream : IProcessorEventStream<ChatHub, IChatEventStream>
+{
+    public Task<IEnumerable<Guid>> GetChatByUser(Guid userId);
+}
 
 public sealed class ChatProcessStream : IChatProcessStream
 {    
@@ -11,6 +14,21 @@ public sealed class ChatProcessStream : IChatProcessStream
     public ChatProcessStream(IChatEventsRepositore chatEvents)
     {
         _chatEvents = chatEvents;
+    }
+
+    public async Task<IEnumerable<Guid>> GetChatByUser(Guid userId)
+    {
+        var chats = new List<Guid>();
+        IAsyncEnumerable<Guid> idChats = _chatEvents.GetChatsByUser(userId);
+
+        await foreach (Guid idchat in idChats)
+        {
+            ChatHub chat =  await Process(idchat);
+
+            if (chat.Users.Contains(userId)) chats.Add(idchat);                
+        }
+
+        return chats;
     }
 
     public IEnumerable<IChatEventStream> GetEvents(Guid Id)

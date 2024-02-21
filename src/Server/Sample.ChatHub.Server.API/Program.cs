@@ -13,9 +13,15 @@ connectionFactory.HostName = "localhost";
 
 var builder = WebApplication.CreateBuilder(args);
 
+ builder.Services.AddDistributedRedisCache(options =>
+            {
+                options.Configuration = builder.Configuration["ConnectionStringsRedis"]!;                    
+                options.InstanceName = "";
+            });
+
 builder.Services.AddGrpcClient<UserInfo.UserInfoClient>(e =>
 {
-    e.Address = new("http://localhost:5003");
+    e.Address = new(builder.Configuration["WokerGrpc"]!);
     
     e.ChannelOptionsActions.Add((opt) =>
     {

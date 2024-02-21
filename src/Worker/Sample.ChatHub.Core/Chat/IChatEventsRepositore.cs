@@ -7,5 +7,5 @@ public interface IChatEventsRepositore
 
     public Task IncressEvent(IChatEventStream @event);
 
-    public Task<IEnumerable<Guid>> GetUserChats(Guid userId);
+    public IAsyncEnumerable<Guid> GetChatsByUser(Guid userId);
 }
