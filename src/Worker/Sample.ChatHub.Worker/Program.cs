@@ -6,8 +6,10 @@ using Sample.ChatHub.Bus;
 using Sample.ChatHub.Core.Chat;
 using Sample.ChatHub.Domain.Abstracts.Options;
 using Sample.ChatHub.Infrastructure;
+using Sample.ChatHub.Server.API.Protos;
 using Sample.ChatHub.Worker;
 using Sample.ChatHub.Worker.Consumers;
+using Sample.ChatHub.Worker.Services;
 
 public class Program
 {
@@ -30,17 +32,35 @@ public class Program
         
 
         return Host.CreateDefaultBuilder(args)
-             .ConfigureAppConfiguration(appConfig =>
-             {
-                 var configuration = new ConfigurationBuilder()
-                     .SetBasePath(Directory.GetCurrentDirectory())
-                     .AddJsonFile("appsettings.json", false, true)
-                     .Build();
-                 appConfig.AddConfiguration(configuration);
-             })                       
-           .ConfigureServices((hostContext, services) =>
-           {
+            .ConfigureAppConfiguration(appConfig =>
+            {
+                var configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", false, true)
+                    .Build();
+                appConfig.AddConfiguration(configuration);
+            })                       
+            .ConfigureServices((hostContext, services) =>
+            {
+                services.AddGrpcClient<UserSync.UserSyncClient>(e =>
+                {
+                    e.Address = new("http://localhost:5002");
+                    
+                    e.ChannelOptionsActions.Add((opt) =>
+                    {
+                        opt.UnsafeUseInsecureChannelCallCredentials = true;
+                    });
+                })
+                .AddCallCredentials((context, metadata) =>
+                {                    
+                    metadata.Add("Authorization", $"Basic c2lzdGVtYTphNTE5OTlmZS0zZTg1LTQ3YmItOTRjZS1mMmMyY2Y2YmQ2N2U=");
+                    return Task.CompletedTask;
+                });
+
+                services.AddScoped<SyncMessageService>();
+
                 services.AddScoped<IChatProcessStream,ChatProcessStream>();
+                services.AddScoped<IMessageProcessStream, MessageProcessStream>();
                 services.ConfigureInfrastructure();               
                                
                 services.AddOptions();
@@ -51,7 +71,9 @@ public class Program
                 services.AddHostedService<CreateChatHandlerConsumer>();
                 services.AddHostedService<SendMessageHandlerConsumer>();
                 services.AddHostedService<UserJoinChatHandlerConsummer>();
-           });
+                services.AddHostedService<MessageReceivedHandlerConsumer>();
+                services.AddHostedService<SyncMessageHandler>();
+            });
     }
        
 }

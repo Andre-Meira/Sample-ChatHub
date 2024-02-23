@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option csharp_namespace = "Sample.ChatHub.Woker.API.Protos";
+
+
+service UserInfo{
+    rpc GetUserChats(UserInfoRequest) returns(UserChatsReponse);
+}
+
+message UserInfoRequest{
+    string userId = 1;
+}
+
+message UserChatsReponse{
+    repeated string chatsID = 1;
+}

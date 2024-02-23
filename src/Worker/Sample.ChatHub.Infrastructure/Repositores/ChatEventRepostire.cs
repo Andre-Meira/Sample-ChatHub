@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
 using Sample.ChatHub.Core.Chat;
+using Sample.ChatHub.Core.Chat.Events;
 using Sample.ChatHub.Infrastructure.Context;
 using Sample.ChatHub.Infrastructure.Models;
 
@@ -10,20 +11,33 @@ internal class ChatEventsRepostiore : IChatEventsRepositore
     private readonly MongoContext _context;
     public ChatEventsRepostiore(MongoContext context) => _context = context;
 
-    public IEnumerable<IChatEventStream> GetEvents(Guid idPayment)
+    public IEnumerable<IChatEventStream> GetEvents(Guid idCorrelation)
     {       
         FilterDefinition<ChatEventStreamDB> filter = Builders<ChatEventStreamDB>.Filter
-            .Eq(x => x.Event.IdCorrelation, idPayment);
+            .Eq(x => x.IdCorrelation, idCorrelation.ToString());
 
-        List<IChatEventStream> events = _context.Eventos.Find(filter)
+        List<IChatEventStream> events = _context.Chat.Find(filter)
             .ToList()
             .OrderBy(e => e.Event.DataProcessed)
-            .Select(e => (IChatEventStream)e.Event).ToList();
+            .Select(e => e.Event).ToList();
 
         return events;
     }
 
+    public async IAsyncEnumerable<Guid> GetChatsByUser(Guid userId)
+    {
+        FilterDefinitionBuilder<ChatEventStreamDB> filter = Builders<ChatEventStreamDB>.Filter;        
+        var builder = filter.Eq(e => e.UserId, userId.ToString());                      
+
+        var events = await _context.Chat.FindAsync(builder);
+         
+        foreach (var eventStream in events.ToList())
+        {
+            yield return eventStream.Event.IdCorrelation;
+        }
+    }
+
     public Task IncressEvent(IChatEventStream @event) 
-        => _context.Eventos.InsertOneAsync(new ChatEventStreamDB(@event));
+        => _context.Chat.InsertOneAsync(new ChatEventStreamDB(@event));
 
 }

@@ -7,8 +7,7 @@ public record ChatHub : IAggregateStream<IChatEventStream>
 {
     public ChatHub()
     {
-        Users = new List<Guid>();
-        Messages = new List<ContextMessage>(); 
+        Users = new List<Guid>();        
     }
 
     public Guid ChatId { get; private set; }
@@ -16,8 +15,7 @@ public record ChatHub : IAggregateStream<IChatEventStream>
     public Guid UserCreated { get; set; }
 
     public List<Guid> Users { get; private set; }
-    public List<ContextMessage> Messages { get; private set; }
-
+    
     public void Apply(IChatEventStream @event) => @event.Process(this);
     
 
@@ -45,19 +43,5 @@ public record ChatHub : IAggregateStream<IChatEventStream>
             throw new ArgumentException("Já existe um id para esse chat.");
 
         ChatId = id;
-    }
-        
-    public void SendMessage(ContextMessage message)
-    {
-        bool UserExist = Users.Contains(message.IdSender);
-
-        if (UserExist == false)
-        {
-            throw new ArgumentException("Usuario não faz parte do chat então não pode mandar mensagem");
-        }
-
-        Messages.Add(message);
-    }
-
-   
+    }      
 }

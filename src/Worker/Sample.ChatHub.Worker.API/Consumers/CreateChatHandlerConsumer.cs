@@ -1,11 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 using Sample.ChatHub.Bus;
 using Sample.ChatHub.Core.Chat;
 using Sample.ChatHub.Core.Chat.Events;
 using Sample.ChatHub.Domain.Contracts;
 
-namespace Sample.ChatHub.Worker;
+namespace Sample.ChatHub.Worker.API.Consumers;
 
 internal sealed class CreateChatHandlerConsumer : ConsumerHandlerBase<CreateChat>
 {

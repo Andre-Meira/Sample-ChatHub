@@ -1,31 +1,31 @@
 ﻿using RabbitMQ.Client;
 using Sample.ChatHub.Bus;
 using Sample.ChatHub.Core.Chat;
-using Sample.ChatHub.Core.Chat.Events;
 using Sample.ChatHub.Domain.Contracts.Messages;
+using Sample.ChatHub.Worker.Core.Messages.Events;
 
-namespace Sample.ChatHub.Worker.Consumers;
+namespace Sample.ChatHub.Worker.API.Consumers;
 
 internal sealed class SendMessageHandlerConsumer : ConsumerHandlerBase<SendMessage>
 {
-    private readonly IChatProcessStream _chatProcess;
+    private readonly IMessageProcessStream _messageProcess;
 
     public SendMessageHandlerConsumer(
-        IConnectionFactory connectionFactory, 
-        IChatProcessStream chatProcess) 
+        IConnectionFactory connectionFactory,
+        IMessageProcessStream messageProcess) 
     : base(connectionFactory)
     {
         this.ExchageType = ExchangeType.Direct;
         this.PrefetchCount = 20;
         this.ExchangeName = "send-message-consumer";
-        _chatProcess = chatProcess;
+        _messageProcess = messageProcess;
     }
 
     public override async Task Consumer(IConsumerContext<SendMessage> context)
     {
         var @event = new SendMessageChat(context.Message.Context);
 
-        await _chatProcess.Include(@event).ConfigureAwait(false);
+        await _messageProcess.Include(@event).ConfigureAwait(false);
         context.NotifyConsumed();
     }
 }

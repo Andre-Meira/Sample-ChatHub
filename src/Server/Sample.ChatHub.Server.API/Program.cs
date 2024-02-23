@@ -3,6 +3,8 @@ using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
 using Sample.ChatHub.Bus;
 using Sample.ChatHub.Server.API;
+using Sample.ChatHub.Server.API.Services;
+using Sample.ChatHub.Woker.API.Protos;
 
 var connectionFactory = new ConnectionFactory();
 connectionFactory.Password = "guest";
@@ -11,9 +13,27 @@ connectionFactory.HostName = "localhost";
 
 var builder = WebApplication.CreateBuilder(args);
 
+ builder.Services.AddDistributedRedisCache(options =>
+            {
+                options.Configuration = builder.Configuration["ConnectionStringsRedis"]!;                    
+                options.InstanceName = "";
+            });
+
+builder.Services.AddGrpcClient<UserInfo.UserInfoClient>(e =>
+{
+    e.Address = new(builder.Configuration["WokerGrpc"]!);
+    
+    e.ChannelOptionsActions.Add((opt) =>
+    {
+        opt.UnsafeUseInsecureChannelCallCredentials = true;
+    });
+});
+
 builder.Services.AddOptions();
 builder.Services.Configure<UserSettings>(builder.Configuration.GetSection("Users"));
 
+builder.Services.AddGrpc();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -57,6 +77,8 @@ builder.Services.AddBus(connectionFactory);
 builder.Services.AddSignalR();
 
 var app = builder.Build();
+
+app.MapGrpcService<SyncMessageProtoHandler>();
 
 app.UseSwagger();
 app.UseSwaggerUI();

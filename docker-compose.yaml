@@ -1,18 +1,26 @@
 version: '3.6'
 
 services:
-  sample.chathub.api:
-    image: ${DOCKER_REGISTRY-}samplechathub
+#  sample.chathub.api:
+#    image: ${DOCKER_REGISTRY-}samplechathub
+#    restart: unless-stopped
+#    container_name: sample-chathub.api
+#    build:
+#      context: .
+#      dockerfile: src/Server/Sample.ChatHub.API/Dockerfile
+
+  cache:
+    image: redis
+    container_name: sample-chathub-redis
     restart: unless-stopped
-    container_name: sample-chathub
-    build:
-      context: .
-      dockerfile: src/Sample.ChatHub.API/Dockerfile
-    
+    ports:
+      - '6379:6379'
+    command: --loglevel warning
+   
   rabbitmq:
     image: rabbitmq:management
     restart: unless-stopped
-    container_name: rabbitmq
+    container_name: sample-chathub-rabbitmq
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
@@ -23,7 +31,7 @@ services:
   mongo:
     image: mongo
     restart: unless-stopped
-    container_name: mongodb
+    container_name: sample-chathub-mongodb
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root

@@ -2,7 +2,7 @@
 
 public record ContextMessage
 {
-    public ContextMessage(Guid idChat,Guid idSender, string text)
+    public ContextMessage(Guid idChat,Guid idSender, string userName, string text)
     {
         Text = text;
         IdSender = idSender;
@@ -10,6 +10,8 @@ public record ContextMessage
 
         IdMessage = Guid.NewGuid(); 
         Date = DateTime.Now;
+
+        UserName = userName;
     }
 
     public Guid IdMessage { get; init; } 
@@ -20,4 +22,6 @@ public record ContextMessage
     public DateTime Date { get; init; }
 
     public string Text { get; init; }
+
+    public string UserName { get; set; }
 }
