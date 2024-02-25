@@ -42,14 +42,14 @@ internal sealed class MongoContextConfiguration
         {
             e.AutoMap();
             e.MapProperty(x => x.IdChat).SetSerializer(new GuidSerializer(BsonType.String));
-            e.MapProperty(x => x.IdSender).SetSerializer(new GuidSerializer(BsonType.String));
+            e.MapProperty(x => x.UserId).SetSerializer(new GuidSerializer(BsonType.String));
         });        
 
         BsonClassMap.RegisterClassMap<ReceivedMessage>(e =>
         {
             e.AutoMap();
 
-            e.MapProperty(x => x.UserID).SetSerializer(new GuidSerializer(BsonType.String));
+            e.MapProperty(x => x.UserId).SetSerializer(new GuidSerializer(BsonType.String));
             e.MapProperty(x => x.MessageId).SetSerializer(new GuidSerializer(BsonType.String));
             e.MapProperty(x => x.IdChat).SetSerializer(new GuidSerializer(BsonType.String));
         });
