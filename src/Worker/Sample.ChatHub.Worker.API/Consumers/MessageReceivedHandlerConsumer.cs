@@ -6,22 +6,16 @@ using Sample.ChatHub.Worker.Core.Messages.Events;
 
 namespace Sample.ChatHub.Worker.API.Consumers;
 
-internal class MessageReceivedHandlerConsumer : ConsumerHandlerBase<MessageReceived>
+internal class MessageReceivedHandlerConsumer : IConsumerHandler<MessageReceived>
 {
     private readonly IMessageProcessStream _messageProcess;
 
-    public MessageReceivedHandlerConsumer(
-        IConnectionFactory connectionFactory,
-        IMessageProcessStream messageProcess)
-    : base(connectionFactory)
+    public MessageReceivedHandlerConsumer(IMessageProcessStream messageProcess)
     {
-        this.ExchageType = ExchangeType.Direct;
-        this.PrefetchCount = 20;
-        this.ExchangeName = "message-received-consumer";
         _messageProcess = messageProcess;
     }
 
-    public override async Task Consumer(IConsumerContext<MessageReceived> context)
+    public async Task Consumer(IConsumerContext<MessageReceived> context)
     {
         var @event = new ReceivedMessage(context.Message.IdChat, context.Message.IdMessage, 
             context.Message.IdUser);

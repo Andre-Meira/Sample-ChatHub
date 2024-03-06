@@ -7,27 +7,21 @@ using Sample.ChatHub.Worker.Core.Messages;
 
 namespace Sample.ChatHub.Worker.API;
 
-internal class SyncMessageHandler : ConsumerHandlerBase<SyncUserMessage>
+internal class SyncMessageHandler : IConsumerHandler<SyncUserMessage>
 {
     private readonly ILogger<SyncMessageHandler> _logger;
     private readonly IMessageProcessStream _process;
     private readonly SyncMessageService _syncService;
 
-    public SyncMessageHandler(IConnectionFactory connectionFactory,
-        ILogger<SyncMessageHandler> logger,
-        IMessageProcessStream process,
-        SyncMessageService syncMessage) : base(connectionFactory)
+    public SyncMessageHandler(ILogger<SyncMessageHandler> logger, 
+        IMessageProcessStream process, SyncMessageService syncService)
     {
-        this.ExchageType = ExchangeType.Direct;
-        this.PrefetchCount = 10;
-        this.ExchangeName = "sync-message-consumer";
-
         _logger = logger;
         _process = process;
-        _syncService = syncMessage;
+        _syncService = syncService;
     }
 
-    public override async Task Consumer(IConsumerContext<SyncUserMessage> context)
+    public async Task Consumer(IConsumerContext<SyncUserMessage> context)
     {
         Guid userId = context.Message.UserId;
         IEnumerable<MessageHub> messages = await _process.GetMessagesToBeConfirmed(userId);

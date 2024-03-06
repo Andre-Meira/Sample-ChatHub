@@ -6,22 +6,16 @@ using Sample.ChatHub.Domain.Contracts.Chat;
 
 namespace Sample.ChatHub.Worker.API.Consumers;
 
-internal class UserJoinChatHandlerConsummer : ConsumerHandlerBase<UserJoinChat>
+internal class UserJoinChatHandlerConsummer : IConsumerHandler<UserJoinChat>
 {
     private readonly IChatProcessStream _chatProcess;
 
-    public UserJoinChatHandlerConsummer(
-        IConnectionFactory connectionFactory,
-        IChatProcessStream chatProcess)
-    : base(connectionFactory)
+    public UserJoinChatHandlerConsummer(IChatProcessStream chatProcess)
     {
-        this.ExchageType = ExchangeType.Direct;
-        this.PrefetchCount = 20;
-        this.ExchangeName = "user-join-consumer";
         _chatProcess = chatProcess;
     }
 
-    public override async Task Consumer(IConsumerContext<UserJoinChat> context)
+    public async Task Consumer(IConsumerContext<UserJoinChat> context)
     {
         var @event = new UserJoinedChat(context.Message.ChatId, context.Message.UserId);
 
