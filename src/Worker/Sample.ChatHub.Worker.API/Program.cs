@@ -2,6 +2,9 @@ using RabbitMQ.Client;
 using Sample.ChatHub.Bus;
 using Sample.ChatHub.Core.Chat;
 using Sample.ChatHub.Domain.Abstracts.Options;
+using Sample.ChatHub.Domain.Contracts;
+using Sample.ChatHub.Domain.Contracts.Chat;
+using Sample.ChatHub.Domain.Contracts.Messages;
 using Sample.ChatHub.Infrastructure;
 using Sample.ChatHub.Server.API.Protos;
 using Sample.ChatHub.Worker.API;
@@ -43,27 +46,27 @@ builder.Services.Configure<BusOptions>(builder.Configuration.GetSection(BusOptio
 builder.Services.Configure<MongoOptions>(builder.Configuration.GetSection(MongoOptions.Key));                
 builder.Services.AddBus(connectionFactory);
 
-builder.Services.AddConsumer<CreateChatHandlerConsumer>(() =>
+builder.Services.AddConsumer<CreateChatHandlerConsumer, CreateChat>(() =>
 {
     return new ConsumerOptions("create-chat-consumer", ExchangeType.Direct, prefetchCount: 20);
 });
 
-builder.Services.AddConsumer<UserJoinChatHandlerConsummer>(() =>
+builder.Services.AddConsumer<UserJoinChatHandlerConsummer, UserJoinChat>(() =>
 {
     return new ConsumerOptions("user-join-consumer", ExchangeType.Direct, prefetchCount: 20);
 });
 
-builder.Services.AddConsumer<MessageReceivedHandlerConsumer>(() =>
+builder.Services.AddConsumer<MessageReceivedHandlerConsumer, MessageReceived>(() =>
 {
     return new ConsumerOptions("message-received-consumer", ExchangeType.Direct, prefetchCount: 20);
 });
 
-builder.Services.AddConsumer<SyncMessageHandler>(() =>
+builder.Services.AddConsumer<SyncMessageHandler, SyncUserMessage>(() =>
 {
     return new ConsumerOptions("sync-message-consumer", ExchangeType.Direct, prefetchCount: 20);
 });
 
-builder.Services.AddConsumer<SendMessageHandlerConsumer>(() =>
+builder.Services.AddConsumer<SendMessageHandlerConsumer, SendMessage>(() =>
 {
     return new ConsumerOptions("send-message-consumer", ExchangeType.Direct, prefetchCount: 20);
 });

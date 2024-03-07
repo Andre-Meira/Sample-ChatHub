@@ -17,12 +17,12 @@ public static class BusConfiguration
         return services;
     }
 
-    public static IServiceCollection AddConsumer<TConsumerHandler>(
+    public static IServiceCollection AddConsumer<TConsumerHandler, IMessage>(
         this IServiceCollection services, 
         Func<IConsumerOptions> consumerOptions) 
     where TConsumerHandler : IConsumer
-    {
-        var message = GetMessageConsumer<TConsumerHandler>();
+    where IMessage : class
+    {        
         var consumer = GetConsumerInterface<TConsumerHandler>();
 
         services.AddScoped(consumer, typeof(TConsumerHandler));
@@ -35,7 +35,7 @@ public static class BusConfiguration
 
         services.AddHostedService(e =>
         {
-            var consumerHandlerInstance = Activator.CreateInstance(typeof(ConsumerHandlerBase<>).MakeGenericType(message), 
+            var consumerHandlerInstance = Activator.CreateInstance(typeof(ConsumerHandlerBase<IMessage>),                
                 connection,providerFactory,optitons);
                        
 
@@ -44,16 +44,12 @@ public static class BusConfiguration
                 throw new ArgumentException("Não foi possivel criar a instancia");
             }
 
-            return (BackgroundService)consumerHandlerInstance;
+            return (ConsumerHandlerBase<IMessage>)consumerHandlerInstance;
         });
 
         return services;
     }
 
-    private static Type GetMessageConsumer<TConsumerHandler>() where TConsumerHandler : IConsumer
-    {
-        return GetConsumerInterface<TConsumerHandler>().GetGenericArguments().FirstOrDefault()!;            
-    }
 
     private static Type GetConsumerInterface<TConsumerHandler>()
     {
