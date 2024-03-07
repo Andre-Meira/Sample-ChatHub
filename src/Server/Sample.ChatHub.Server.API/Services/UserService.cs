@@ -17,6 +17,10 @@ class UserService : IUserService
     private IDistributedCache _cache;    
     private readonly UserInfo.UserInfoClient _userClient;
 
+    private DistributedCacheEntryOptions CacheEntryOptions = new DistributedCacheEntryOptions()
+        .SetAbsoluteExpiration(TimeSpan.FromMinutes(15));
+    
+
     public UserService(IDistributedCache cache, 
         
         UserInfo.UserInfoClient userClient)
@@ -38,7 +42,7 @@ class UserService : IUserService
         UserChats user = await SendRequestAsync(idUser);
 
         string jsonChat = JsonConvert.SerializeObject(user);
-        await _cache.SetStringAsync(idUser.ToString(), jsonChat);
+        await _cache.SetStringAsync(idUser.ToString(), jsonChat, CacheEntryOptions);
 
         return user;
     }    
@@ -48,15 +52,12 @@ class UserService : IUserService
     {
         UserChats userChats = await GetUserChats(idUser).ConfigureAwait(false);
 
-        if (userChats.IdChats.Contains(idChat.ToString()) == false)
-        {
-            userChats.IdChats.Add(idChat.ToString());
+        if (userChats.IdChats.Contains(idChat.ToString())) return;
 
-            string json = JsonConvert.SerializeObject(userChats);
-            await _cache.SetStringAsync(idUser.ToString(), json);
-        }
+        userChats.IdChats.Add(idChat.ToString());
 
-        return;
+        string json = JsonConvert.SerializeObject(userChats);
+        await _cache.SetStringAsync(idUser.ToString(), json, CacheEntryOptions);
     }
 
 
@@ -68,10 +69,7 @@ class UserService : IUserService
         UserChatsReponse reponse = await _userClient.GetUserChatsAsync(request)
             .ConfigureAwait(false);
 
-        foreach (string chat in reponse.ChatsID)
-        {
-            userChat.IdChats.Add(chat);
-        }
+        foreach (string chat in reponse.ChatsID) userChat.IdChats.Add(chat);
 
         return userChat;
     }
