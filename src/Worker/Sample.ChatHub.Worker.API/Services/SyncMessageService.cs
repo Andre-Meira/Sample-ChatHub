@@ -27,6 +27,7 @@ internal sealed class SyncMessageService
                 MessageId = messages.MessageId.ToString(),
                 SenderId = messages.SenderId.ToString(),
                 Text = messages.Message,
+                DateTime = messages.Timestamp.ToString()
             };
 
             syncMessageRequest.Messages.Add(messageList);

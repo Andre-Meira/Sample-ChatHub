@@ -26,7 +26,7 @@ internal class SyncMessageHandler : IConsumerHandler<SyncUserMessage>
         Guid userId = context.Message.UserId;
         IEnumerable<MessageHub> messages = await _process.GetMessagesToBeConfirmed(userId);
         
-        var messageList = messages.ToList();
+        var messageList = messages.Where(e => e.MessageId != Guid.Empty).ToList();
 
         if (messages.Any() == false) return;
 

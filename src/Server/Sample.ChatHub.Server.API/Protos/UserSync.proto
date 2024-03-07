@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
 
 option csharp_namespace = "Sample.ChatHub.Server.API.Protos";
 
@@ -20,4 +21,5 @@ message MessageList{
 	string MessageId = 2; 
 	string SenderId = 3;
 	string Text = 4;
+	string DateTime = 5;
 }

@@ -2,14 +2,14 @@
 
 public record ContextMessage
 {
-    public ContextMessage(Guid idChat,Guid idSender, string userName, string text)
+    public ContextMessage(Guid idChat,Guid idSender, string userName, string text, DateTime date = default)
     {
         Text = text;
         IdSender = idSender;
         IdChat = idChat;
 
         IdMessage = Guid.NewGuid(); 
-        Date = DateTime.Now;
+        Date = date == default ? DateTime.Now : date;
 
         UserName = userName;
     }

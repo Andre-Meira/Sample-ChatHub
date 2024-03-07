@@ -30,8 +30,8 @@ public class SyncMessageProtoHandler : UserSync.UserSyncBase
 
             User user = _usersOptions.FirstOrDefault(e => e.Id == msg.SenderId)!;
 
-            var contextMessage = new ContextMessage(chatId, 
-                Guid.Parse(msg.SenderId), user.Name, msg.Text);
+            var contextMessage = new ContextMessage(chatId, Guid.Parse(msg.SenderId), 
+                user.Name, msg.Text, date: DateTime.Parse(msg.DateTime));            
 
             await userChat.ReceiveMessage(contextMessage);
         }

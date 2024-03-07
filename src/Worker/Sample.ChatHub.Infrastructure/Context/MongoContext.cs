@@ -33,6 +33,7 @@ internal sealed class MongoContextConfiguration
     public static void RegisterConfig()
     {
         BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.CSharpLegacy));
+        BsonSerializer.RegisterSerializer(typeof(DateTime), new DateTimeSerializer(DateTimeKind.Local));
 
         BsonClassMap.RegisterClassMap<ChatCreated>();                
         BsonClassMap.RegisterClassMap<UserJoinedChat>();
