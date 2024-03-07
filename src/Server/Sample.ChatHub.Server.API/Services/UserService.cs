@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Formats.Asn1;
+using System.Text;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using Sample.ChatHub.Woker.API.Protos;
@@ -7,7 +8,8 @@ namespace Sample.ChatHub.Server.API;
 
 public interface IUserService
 {
-    Task<UserChats> GetUserChats(Guid idUser);        
+    Task<UserChats> GetUserChats(Guid idUser, CancellationToken cancellationToken = default);
+    Task IncludeUserChat(Guid idUser, Guid idChat, CancellationToken cancellationToken = default);
 }
 
 class UserService : IUserService
@@ -23,7 +25,8 @@ class UserService : IUserService
         _userClient = userClient;
     }
 
-    public async Task<UserChats> GetUserChats(Guid idUser) 
+    public async Task<UserChats> GetUserChats(Guid idUser, 
+        CancellationToken cancellationToken = default) 
     {
         string? json = await _cache.GetStringAsync(idUser.ToString());
 
@@ -34,8 +37,28 @@ class UserService : IUserService
         
         UserChats user = await SendRequestAsync(idUser);
 
+        string jsonChat = JsonConvert.SerializeObject(user);
+        await _cache.SetStringAsync(idUser.ToString(), jsonChat);
+
         return user;
+    }    
+
+    public async Task IncludeUserChat(Guid idUser, Guid idChat, 
+        CancellationToken cancellationToken = default)
+    {
+        UserChats userChats = await GetUserChats(idUser).ConfigureAwait(false);
+
+        if (userChats.IdChats.Contains(idChat.ToString()) == false)
+        {
+            userChats.IdChats.Add(idChat.ToString());
+
+            string json = JsonConvert.SerializeObject(userChats);
+            await _cache.SetStringAsync(idUser.ToString(), json);
+        }
+
+        return;
     }
+
 
     private async Task<UserChats> SendRequestAsync(Guid idUser)
     {

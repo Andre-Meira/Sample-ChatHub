@@ -16,10 +16,12 @@ namespace Sample.ChatHub.API.Controllers.v1;
 public class ChatHubController : DefaultController
 {
     private readonly IPublishContext _context;
+    private readonly IUserService _userService;
 
-    public ChatHubController(IPublishContext context)
+    public ChatHubController(IPublishContext context, IUserService userService)
     {
         _context = context;
+        _userService = userService;
     }
 
     [HttpPost("Create")]
@@ -27,11 +29,12 @@ public class ChatHubController : DefaultController
     public async Task<IActionResult> Create([FromBody, Required] string name)
     {
         Guid IdChat = Guid.NewGuid();
-
         CreateChat chat = new CreateChat(IdChat, name, UserID);        
-        await _context.PublishMessage(chat).ConfigureAwait(false);
 
-        return Ok($"Chat criado. id:{IdChat}");
+        await _context.PublishMessage(chat).ConfigureAwait(false);
+        await _userService.IncludeUserChat(UserID, IdChat);
+
+        return Ok($"Chat criado, id:{IdChat}");
     }
 
     [HttpPost("Join/{IdChat}")]
@@ -39,6 +42,8 @@ public class ChatHubController : DefaultController
     public async Task<IActionResult> JoinChat(Guid IdChat)
     {
         await _context.PublishMessage(new UserJoinChat(IdChat, UserID)).ConfigureAwait(false);
+        await _userService.IncludeUserChat(UserID, IdChat);
+
         return Ok("Sucessco.");
     }
 }
