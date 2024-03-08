@@ -8,11 +8,13 @@ namespace Sample.ChatHub.Bus;
 
 public static class BusConfiguration
 {
+    private static IConnection? _connection;
+
     public static IServiceCollection AddBus(this IServiceCollection services, 
         IConnectionFactory connectionFactory)
     {
-        services.AddSingleton(e => connectionFactory.CreateConnection());
-        services.AddScoped<IPublishContext,PublishContext>();
+        _connection = connectionFactory.CreateConnection();
+        services.AddScoped<IPublishContext,PublishContext>(e => new PublishContext(_connection));
 
         return services;
     }
@@ -30,14 +32,12 @@ public static class BusConfiguration
         IConsumerOptions optitons = consumerOptions.Invoke();
         ServiceProvider provider = services.BuildServiceProvider();
 
-        IServiceScopeFactory providerFactory = provider.GetService<IServiceScopeFactory>()!;
-        IConnectionFactory connection = provider.GetService<IConnectionFactory>()!;
+        IServiceScopeFactory providerFactory = provider.GetService<IServiceScopeFactory>()!;        
 
         services.AddHostedService(e =>
         {
-            var consumerHandlerInstance = Activator.CreateInstance(typeof(ConsumerHandlerBase<IMessage>),                
-                connection,providerFactory,optitons);
-                       
+            var consumerHandlerInstance = Activator.CreateInstance(typeof(ConsumerHandlerBase<IMessage>),
+                _connection, providerFactory,optitons);                       
 
             if (consumerHandlerInstance is null)
             {
