@@ -18,11 +18,10 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
     protected string MessageExchangeName => ContractExtensions.GetExchangeContract<TMessage>();
     protected string MessageExchangeType => ContractExtensions.GetExchangeTypeContract<TMessage>();
 
-    public ConsumerHandlerBase(IConnectionFactory connectionFactory, 
-        IServiceScopeFactory serviceScopeFactory, IConsumerOptions consumerOptions)
-    {
-        IConnection connection  = connectionFactory.CreateConnection();
-
+    public ConsumerHandlerBase(IConnection connection, 
+        IServiceScopeFactory serviceScopeFactory, 
+        IConsumerOptions consumerOptions)
+    {                       
         using var service = serviceScopeFactory.CreateScope();
 
         _consumerHandler = service.ServiceProvider.GetRequiredService<IConsumerHandler<TMessage>>();
@@ -57,7 +56,7 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
                 TMessage message = TransformMessage(ea);
                 var context = new ConsumerContext<TMessage>(message, ea.DeliveryTag, _channel);
                 await _consumerHandler.Consumer(context).ConfigureAwait(false);
-            };
+            };            
 
             _channel.BasicConsume(_consumerOptions.ExchangeName, false, consumerEvent);
         });

@@ -15,12 +15,10 @@ internal class PublishContext : IPublishContext, IDisposable
 {
     private readonly IModel _channel;
 
-    public PublishContext(IConnectionFactory connectionFactory)
-    {
-        IConnection connection = connectionFactory.CreateConnection();
+    public PublishContext(IConnection connection)
+    {        
         _channel = connection.CreateModel();
     }
-
 
     public void Dispose() => _channel.Dispose();
     
@@ -30,6 +28,10 @@ internal class PublishContext : IPublishContext, IDisposable
         string exchageType = ContractExtensions.GetExchangeTypeContract<TMessage>();
 
         _channel.ExchangeDeclare(exchange, exchageType, true);
+
+        IBasicProperties properties = _channel.CreateBasicProperties();
+        properties.DeliveryMode = 2;
+        properties.ContentType = "application/json";
 
         string json = JsonConvert.SerializeObject(message);
         var body = Encoding.UTF8.GetBytes(json);

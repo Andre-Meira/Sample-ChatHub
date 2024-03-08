@@ -11,7 +11,7 @@ public static class BusConfiguration
     public static IServiceCollection AddBus(this IServiceCollection services, 
         IConnectionFactory connectionFactory)
     {
-        services.AddScoped(e => connectionFactory);
+        services.AddSingleton(e => connectionFactory.CreateConnection());
         services.AddScoped<IPublishContext,PublishContext>();
 
         return services;
