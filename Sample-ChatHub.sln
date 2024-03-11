@@ -32,7 +32,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{B0432D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Worker", "Worker", "{BD8B3AAA-F9C5-405B-8549-155490BF49C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.ChatHub.Worker.API", "src\Worker\Sample.ChatHub.Worker.API\Sample.ChatHub.Worker.API.csproj", "{C5FD77F6-67FB-46D6-9928-D652DE37FFF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.ChatHub.Worker.API", "src\Worker\Sample.ChatHub.Worker.API\Sample.ChatHub.Worker.API.csproj", "{C5FD77F6-67FB-46D6-9928-D652DE37FFF7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "prometheus", "prometheus", "{2B0460FE-52EC-4F91-AD73-43B94450E504}"
+	ProjectSection(SolutionItems) = preProject
+		datasource.yml = datasource.yml
+		docker-compose-promo.yaml = docker-compose-promo.yaml
+		prometheus.yml = prometheus.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +95,7 @@ Global
 		{B0432D50-737C-4D39-86A5-D76534F3503A} = {920554FA-854C-46E1-9C11-B032AE0D3127}
 		{BD8B3AAA-F9C5-405B-8549-155490BF49C4} = {920554FA-854C-46E1-9C11-B032AE0D3127}
 		{C5FD77F6-67FB-46D6-9928-D652DE37FFF7} = {BD8B3AAA-F9C5-405B-8549-155490BF49C4}
+		{2B0460FE-52EC-4F91-AD73-43B94450E504} = {D7EE8978-F19F-4F9E-BAD0-242A6A21ACFE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {95401B8D-40A6-47D6-B4F1-0194B57AC5B1}
