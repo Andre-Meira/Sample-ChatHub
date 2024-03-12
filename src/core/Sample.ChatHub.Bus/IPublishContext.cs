@@ -31,11 +31,11 @@ internal class PublishContext : IPublishContext, IDisposable
 
         IBasicProperties properties = _channel.CreateBasicProperties();
         properties.DeliveryMode = 2;
-        properties.ContentType = "application/json";
+        properties.ContentType = "application/json";        
 
         string json = JsonConvert.SerializeObject(message);
         var body = Encoding.UTF8.GetBytes(json);
 
-        return Task.Run(() => _channel.BasicPublish(exchange: exchange, routingKey, null, body));
+        return Task.Run(() => _channel.BasicPublish(exchange: exchange, routingKey, properties, body));
     }
 }
