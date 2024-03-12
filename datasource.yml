@@ -4,7 +4,7 @@ datasources:
 - name: Prometheus
   type: prometheus
   orgId: 1
-  url: http://localhost:9090 
+  url: http://sample-chathub-prometheus:9090 
   isDefault: true
   access: proxy
   editable: true

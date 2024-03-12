@@ -3,6 +3,7 @@ version: '3.6'
 services: 
  prometheus:
     image: prom/prometheus
+    container_name: sample-chathub-prometheus
     volumes:
       - "./prometheus.yml:/etc/prometheus/prometheus.yml"    
     ports:
@@ -12,7 +13,7 @@ services:
     ports:
       - 9100:9100
  grafana:
-    image: grafana/grafana    
+    image: grafana/grafana        
     volumes:
       - ./datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
     container_name: grafana
