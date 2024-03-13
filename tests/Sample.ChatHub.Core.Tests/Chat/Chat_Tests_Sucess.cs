@@ -1,5 +1,6 @@
 ﻿using Moq;
 using Sample.ChatHub.Core.Chat.Events;
+using Sample.ChatHub.Worker.Core.Chat.Projections;
 
 namespace Sample.ChatHub.Core.Tests.Chat;
 
@@ -22,7 +23,7 @@ public class Chat_Tests_Sucess
             .Returns((Guid id) => chatEventStreams.Where(e => e.IdCorrelation == id));
 
         _chatEventsRepositore = chatRepositoreRepositore.Object;
-        _chatProcess = new ChatProcessStream(_chatEventsRepositore);
+        _chatProcess = new ChatProcessStream(_chatEventsRepositore, new DefauftProjection());
     }
     #endregion
 

@@ -1,4 +1,5 @@
 ﻿using Sample.ChatHub.Domain.Abstracts.EventStream;
+using Sample.ChatHub.Worker.Core.Chat.Projections;
 
 namespace Sample.ChatHub.Core.Chat;
 
@@ -10,10 +11,13 @@ public interface IChatProcessStream : IProcessorEventStream<ChatHub, IChatEventS
 public sealed class ChatProcessStream : IChatProcessStream
 {    
     private readonly IChatEventsRepositore _chatEvents;
+    private readonly IChatDecoratorProjection _chatDecoratorProjection;
 
-    public ChatProcessStream(IChatEventsRepositore chatEvents)
+    public ChatProcessStream(IChatEventsRepositore chatEvents, 
+        IChatDecoratorProjection chatDecoratorProjection)
     {
         _chatEvents = chatEvents;
+        _chatDecoratorProjection = chatDecoratorProjection;
     }
 
     public async Task<IEnumerable<Guid>> GetChatByUser(Guid userId)
@@ -41,7 +45,8 @@ public sealed class ChatProcessStream : IChatProcessStream
         ChatHub stream = await Process(@event.IdCorrelation);
         stream.Apply(@event);
 
-        await _chatEvents.IncressEvent(@event).ConfigureAwait(false);
+        await _chatEvents.IncressEvent(@event).ConfigureAwait(false);        
+        await _chatDecoratorProjection.Apply(@event).ConfigureAwait(false);
     }
 
     public Task<ChatHub> Process(Guid Id)

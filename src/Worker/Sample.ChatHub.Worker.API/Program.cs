@@ -10,6 +10,7 @@ using Sample.ChatHub.Server.API.Protos;
 using Sample.ChatHub.Worker.API;
 using Sample.ChatHub.Worker.API.Consumers;
 using Sample.ChatHub.Worker.API.Services;
+using Sample.ChatHub.Worker.Core.Chat.Projections;
 
 var connectionFactory = new ConnectionFactory();
 connectionFactory.Password = "guest";
@@ -39,6 +40,11 @@ builder.Services.AddScoped<SyncMessageService>();
 
 builder.Services.AddScoped<IChatProcessStream,ChatProcessStream>();
 builder.Services.AddScoped<IMessageProcessStream, MessageProcessStream>();
+
+
+builder.Services.AddScoped<IChatDecoratorProjection, DefauftProjection>()
+    .Decorate<IChatDecoratorProjection, ChatMembersProjection>();
+
 builder.Services.ConfigureInfrastructure();               
 
 builder.Services.AddOptions();
