@@ -44,39 +44,9 @@ internal sealed class MongoContextConfiguration
         BsonClassMap.RegisterClassMap<ChatMembers>();
 
         BsonClassMap.RegisterClassMap<ChatMemberProjectionDB>();
-
+       
         BsonClassMap.RegisterClassMap<SendMessageChat>();        
 
-        BsonClassMap.RegisterClassMap<ReceivedMessage>();
-        
-
-        //BsonClassMap.RegisterClassMap<ChatCreated>();
-        //BsonClassMap.RegisterClassMap<UserJoinedChat>();
-        //BsonClassMap.RegisterClassMap<UserLeftChat>();
-
-        //BsonClassMap.RegisterClassMap<ChatMembers>(e =>
-        //{
-        //    e.AutoMap();
-        //    e.MapProperty(x => x.Users).SetSerializer(new EnumerableInterfaceImplementerSerializer<List<Guid>, Guid>(new GuidSerializer(GuidRepresentation.Standard)));
-        //    e.MapProperty(x => x.Id).SetSerializer(new GuidSerializer(BsonType.String));
-        //});
-
-        //BsonClassMap.RegisterClassMap<ChatMemberProjectionDB>();
-
-        //BsonClassMap.RegisterClassMap<SendMessageChat>(e =>
-        //{
-        //    e.AutoMap();
-        //    e.MapProperty(x => x.IdChat).SetSerializer(new GuidSerializer(BsonType.String));
-        //    e.MapProperty(x => x.UserId).SetSerializer(new GuidSerializer(BsonType.String));
-        //});
-
-        //BsonClassMap.RegisterClassMap<ReceivedMessage>(e =>
-        //{
-        //    e.AutoMap();
-
-        //    e.MapProperty(x => x.UserId).SetSerializer(new GuidSerializer(BsonType.String));
-        //    e.MapProperty(x => x.MessageId).SetSerializer(new GuidSerializer(BsonType.String));
-        //    e.MapProperty(x => x.IdChat).SetSerializer(new GuidSerializer(BsonType.String));
-        //});
+        BsonClassMap.RegisterClassMap<ReceivedMessage>();        
     }
 }

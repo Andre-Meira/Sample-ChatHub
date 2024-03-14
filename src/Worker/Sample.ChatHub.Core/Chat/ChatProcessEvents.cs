@@ -5,34 +5,37 @@ namespace Sample.ChatHub.Core.Chat;
 
 public interface IChatProcessStream : IProcessorEventStream<ChatHub, IChatEventStream>
 {
-    public Task<IEnumerable<Guid>> GetChatByUser(Guid userId);
+    public Task<IEnumerable<Guid>> GetChatByUser(Guid userId, CancellationToken cancellationToken = default);
 }
 
 public sealed class ChatProcessStream : IChatProcessStream
 {    
     private readonly IChatEventsRepositore _chatEvents;
     private readonly IChatDecoratorProjection _chatDecoratorProjection;
+    private readonly IRepositoreProjection<ChatMembers, ChatMembersFilter> _repositoreProjection;
 
-    public ChatProcessStream(IChatEventsRepositore chatEvents, 
-        IChatDecoratorProjection chatDecoratorProjection)
+    public ChatProcessStream(IChatEventsRepositore chatEvents,
+        IChatDecoratorProjection chatDecoratorProjection,
+        IRepositoreProjection<ChatMembers, ChatMembersFilter> repositoreProjection)
     {
         _chatEvents = chatEvents;
         _chatDecoratorProjection = chatDecoratorProjection;
+        _repositoreProjection = repositoreProjection;
     }
 
-    public async Task<IEnumerable<Guid>> GetChatByUser(Guid userId)
+    public async Task<IEnumerable<Guid>> GetChatByUser(Guid userId, CancellationToken cancellationToken = default)
     {
-        var chats = new List<Guid>();
-        IAsyncEnumerable<Guid> idChats = _chatEvents.GetChatsByUser(userId);
+        var chatsId = new List<Guid>();
 
-        await foreach (Guid idchat in idChats)
-        {
-            ChatHub chat =  await Process(idchat);
+        IAsyncEnumerable<ChatMembers> chats = _repositoreProjection.FindByFilterAsync(
+            new ChatMembersFilter { IdUser = userId });
 
-            if (chat.Users.Contains(userId)) chats.Add(idchat);                
+        await foreach (ChatMembers chat in chats)
+        {           
+            if (chat.Users.Contains(userId)) chatsId.Add(chat.Id);                
         }
 
-        return chats;
+        return chatsId;
     }
 
     public IEnumerable<IChatEventStream> GetEvents(Guid Id)

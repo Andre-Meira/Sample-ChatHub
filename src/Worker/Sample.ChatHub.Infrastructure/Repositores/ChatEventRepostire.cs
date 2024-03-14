@@ -24,19 +24,6 @@ internal class ChatEventsRepostiore : IChatEventsRepositore
         return events;
     }
 
-    public async IAsyncEnumerable<Guid> GetChatsByUser(Guid userId)
-    {
-        FilterDefinitionBuilder<ChatEventStreamDB> filter = Builders<ChatEventStreamDB>.Filter;        
-        var builder = filter.Eq(e => e.UserId, userId.ToString());                      
-
-        var events = await _context.Chat.FindAsync(builder);
-         
-        foreach (var eventStream in events.ToList())
-        {
-            yield return eventStream.Event.IdCorrelation;
-        }
-    }
-
     public Task IncressEvent(IChatEventStream @event) 
         => _context.Chat.InsertOneAsync(new ChatEventStreamDB(@event));
 

@@ -23,7 +23,7 @@ public class Chat_Tests_Sucess
             .Returns((Guid id) => chatEventStreams.Where(e => e.IdCorrelation == id));
 
         _chatEventsRepositore = chatRepositoreRepositore.Object;
-        _chatProcess = new ChatProcessStream(_chatEventsRepositore, new DefauftProjection());
+        _chatProcess = new ChatProcessStream(_chatEventsRepositore, new DefauftProjection(), null);
     }
     #endregion
 

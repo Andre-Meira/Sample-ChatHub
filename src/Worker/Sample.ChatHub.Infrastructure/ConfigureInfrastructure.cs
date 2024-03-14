@@ -22,7 +22,7 @@ public static class InfrastructureImplementation
         services.AddTransient<MongoContext>();
         services.AddScoped<IChatEventsRepositore, ChatEventsRepostiore>();
         services.AddScoped<IMessageEventsRepositore, MessageEventsRepostiore>();
-        services.AddScoped<IRepositoreProjection<ChatMembers>, ChatMemberRepositoreProjection> ();
+        services.AddScoped<IRepositoreProjection<ChatMembers, ChatMembersFilter>, ChatMemberRepositoreProjection> ();
 
         return services;
     }
