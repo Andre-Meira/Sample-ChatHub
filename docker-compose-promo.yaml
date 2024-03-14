@@ -4,6 +4,7 @@ services:
  prometheus:
     image: prom/prometheus
     container_name: sample-chathub-prometheus
+    restart: unless-stopped
     volumes:
       - "./prometheus.yml:/etc/prometheus/prometheus.yml"    
     ports:
