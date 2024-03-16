@@ -52,30 +52,22 @@ builder.Services.Configure<BusOptions>(builder.Configuration.GetSection(BusOptio
 builder.Services.Configure<MongoOptions>(builder.Configuration.GetSection(MongoOptions.Key));                
 builder.Services.AddBus(connectionFactory);
 
-builder.Services.AddConsumer<CreateChatHandlerConsumer, CreateChat>(() =>
+builder.Services.AddConsumer<CreateChatHandlerConsumer, CreateChat>(e =>
 {
-    return new ConsumerOptions("create-chat-consumer", ExchangeType.Direct, prefetchCount: 20);
+    e.ExchangeName = "create-chat-consumer";
+    
+    e.FaultConfig = (config) =>
+    {
+        config.TimeSpan = TimeSpan.FromSeconds(3);
+        config.Attempt = 3;
+    };
+
 });
 
-builder.Services.AddConsumer<UserJoinChatHandlerConsummer, UserJoinChat>(() =>
-{
-    return new ConsumerOptions("user-join-consumer", ExchangeType.Direct, prefetchCount: 20);
-});
-
-builder.Services.AddConsumer<MessageReceivedHandlerConsumer, MessageReceived>(() =>
-{
-    return new ConsumerOptions("message-received-consumer", ExchangeType.Direct, prefetchCount: 20);
-});
-
-builder.Services.AddConsumer<SyncMessageHandler, SyncUserMessage>(() =>
-{
-    return new ConsumerOptions("sync-message-consumer", ExchangeType.Direct, prefetchCount: 20);
-});
-
-builder.Services.AddConsumer<SendMessageHandlerConsumer, SendMessage>(() =>
-{
-    return new ConsumerOptions("send-message-consumer", ExchangeType.Direct, prefetchCount: 20);
-});
+builder.Services.AddConsumer<UserJoinChatHandlerConsummer, UserJoinChat>(e => e.ExchangeName = "user-joinChat-consumer");
+builder.Services.AddConsumer<MessageReceivedHandlerConsumer, MessageReceived>(e => e.ExchangeName = "message-received-consumer");
+builder.Services.AddConsumer<SyncMessageHandler, SyncUserMessage>(e => e.ExchangeName = "sync-message-consumer");
+builder.Services.AddConsumer<SendMessageHandlerConsumer, SendMessage>(e=> e.ExchangeName = "send-message-consumer");
 
 var app = builder.Build();
 

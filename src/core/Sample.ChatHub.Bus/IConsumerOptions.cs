@@ -1,38 +1,24 @@
 ﻿using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Sample.ChatHub.Bus.Models;
 
 namespace Sample.ChatHub.Bus;
 
 public interface IConsumerOptions
 {
-    public string ExchangeName { get; init; }
-    public string RoutingKey { get; init; } 
-    public string ExchageType { get; init; }
-    public ushort PrefetchCount { get; init; }
+    public string ExchangeName { get; set; }
+    public string RoutingKey { get; set; }
+    public string ExchageType { get; set; }
+    public ushort PrefetchCount { get; set; }
+    public Action<IFaultConsumerConfiguration>? FaultConfig { get; set; } 
 }
 
 
-public record ConsumerOptions : IConsumerOptions
+internal record ConsumerOptions : IConsumerOptions
 {
-    public ConsumerOptions(
-        string exchangeName, 
-        string exchageType, 
-        string routingKey = "", 
-        ushort prefetchCount = 0)
-    {
-        ExchangeName = exchangeName;
-        RoutingKey = routingKey;
-        ExchageType = exchageType;
-        PrefetchCount = prefetchCount;
-    }
+    public string ExchangeName { get; set; } = "";
+    public string RoutingKey { get; set; } = "";
+    public string ExchageType { get; set; } = ExchangeType.Direct;
+    public ushort PrefetchCount { get; set; } = 0;
 
-    public string ExchangeName { get; init; }
-    public string RoutingKey { get; init; }
-    public string ExchageType { get; init; }
-
-    public ushort PrefetchCount { get; init; }
+    public Action<IFaultConsumerConfiguration>? FaultConfig { get; set; } = null;
 }

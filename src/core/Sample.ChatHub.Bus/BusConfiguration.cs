@@ -20,16 +20,17 @@ public static class BusConfiguration
     }
 
     public static IServiceCollection AddConsumer<TConsumerHandler, IMessage>(
-        this IServiceCollection services, 
-        Func<IConsumerOptions> consumerOptions) 
-    where TConsumerHandler : IConsumer
-    where IMessage : class
+        this IServiceCollection services, Action<IConsumerOptions> consumerOptions) 
+        where TConsumerHandler : IConsumer 
+        where IMessage : class
     {        
         var consumer = GetConsumerInterface<TConsumerHandler>();
 
         services.AddScoped(consumer, typeof(TConsumerHandler));
 
-        IConsumerOptions optitons = consumerOptions.Invoke();
+        IConsumerOptions optitons = new ConsumerOptions();
+        consumerOptions.Invoke(optitons);
+
         ServiceProvider provider = services.BuildServiceProvider();
 
         IServiceScopeFactory providerFactory = provider.GetService<IServiceScopeFactory>()!;        
@@ -37,7 +38,7 @@ public static class BusConfiguration
         services.AddHostedService(e =>
         {
             var consumerHandlerInstance = Activator.CreateInstance(typeof(ConsumerHandlerBase<IMessage>),
-                _connection, providerFactory,optitons);                       
+                _connection, providerFactory, optitons);                       
 
             if (consumerHandlerInstance is null)
             {

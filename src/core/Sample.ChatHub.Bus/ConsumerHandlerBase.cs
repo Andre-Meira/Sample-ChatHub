@@ -27,6 +27,8 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
         _consumerHandler = service.ServiceProvider.GetRequiredService<IConsumerHandler<TMessage>>();
         _channel = connection.CreateModel();                    
         _consumerOptions = consumerOptions;
+
+        Initilize();
     }        
 
     private void Initilize()
@@ -46,20 +48,29 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        Initilize();
+        var consumerEvent = new EventingBasicConsumer(_channel);
 
-        await Task.Run(() => {
-            var consumerEvent = new EventingBasicConsumer(_channel); 
-
-            consumerEvent.Received += async (model, ea) =>
-            {
-                TMessage message = TransformMessage(ea);
-                var context = new ConsumerContext<TMessage>(message, ea.DeliveryTag, _channel);
-                await _consumerHandler.Consumer(context).ConfigureAwait(false);
-            };            
-
+        await Task.Run(() =>
+        {
+            consumerEvent.Received += async (model, ea) => await ReceivedMessageAsync(ea);
             _channel.BasicConsume(_consumerOptions.ExchangeName, false, consumerEvent);
-        });
+        });        
+    }
+
+    private async Task ReceivedMessageAsync(BasicDeliverEventArgs args) 
+    {
+        TMessage message = TransformMessage(args);
+
+        try
+        {
+            var context = new ConsumerContext<TMessage>(message, args.DeliveryTag, _channel);
+            await _consumerHandler.Consumer(context).ConfigureAwait(false);
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
     }
 
     private TMessage TransformMessage(BasicDeliverEventArgs eventArgs)

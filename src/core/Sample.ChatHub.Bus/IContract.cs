@@ -4,8 +4,8 @@
 [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
 public class ContractAttribute : Attribute
 {
-    public ContractAttribute(string exchange = "", 
-        string exchangeType = "direct", 
+    public ContractAttribute(string exchange = "",
+        string exchangeType = "direct",
         string routingKey = "")
     {
         Exchange = exchange;
@@ -19,7 +19,7 @@ public class ContractAttribute : Attribute
 
     public string RoutingKey { get; }
 
-    
+
 }
 
 
@@ -32,7 +32,7 @@ public static class ContractExtensions
 
         if(infoAttribute == null)
             throw new ArgumentException("O contrato não possui o atributo ContractAttribute");
-            
+
         return infoAttribute.Exchange;
     }
 
@@ -43,7 +43,7 @@ public static class ContractExtensions
 
         if(infoAttribute == null)
             throw new ArgumentException("O contrato não possui o atributo ContractAttribute");
-            
+
         return infoAttribute.ExchangeType;
     }
 
