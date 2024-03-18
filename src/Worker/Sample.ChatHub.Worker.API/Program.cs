@@ -23,7 +23,7 @@ builder.Services.AddGrpc();
 
 builder.Services.AddGrpcClient<UserSync.UserSyncClient>(e =>
 {
-    e.Address = new("http://localhost:5002");
+    e.Address = new(builder.Configuration["UrlServer"]!);
     
     e.ChannelOptionsActions.Add((opt) =>
     {
@@ -32,7 +32,7 @@ builder.Services.AddGrpcClient<UserSync.UserSyncClient>(e =>
 })
 .AddCallCredentials((context, metadata) =>
 {
-    metadata.Add("Authorization", $"Basic c2lzdGVtYTphNTE5OTlmZS0zZTg1LTQ3YmItOTRjZS1mMmMyY2Y2YmQ2N2U=");
+    metadata.Add("Authorization", builder.Configuration["AuthGrpcServer"]!);
     return Task.CompletedTask;
 });
 
@@ -52,18 +52,7 @@ builder.Services.Configure<BusOptions>(builder.Configuration.GetSection(BusOptio
 builder.Services.Configure<MongoOptions>(builder.Configuration.GetSection(MongoOptions.Key));                
 builder.Services.AddBus(connectionFactory);
 
-builder.Services.AddConsumer<CreateChatHandlerConsumer, CreateChat>(e =>
-{
-    e.ExchangeName = "create-chat-consumer";
-    
-    e.FaultConfig = (config) =>
-    {
-        config.TimeSpan = TimeSpan.FromSeconds(3);
-        config.Attempt = 3;
-    };
-
-});
-
+builder.Services.AddConsumer<CreateChatHandlerConsumer, CreateChat>(e => e.ExchangeName = "create-chat-consumer");
 builder.Services.AddConsumer<UserJoinChatHandlerConsummer, UserJoinChat>(e => e.ExchangeName = "user-joinChat-consumer");
 builder.Services.AddConsumer<MessageReceivedHandlerConsumer, MessageReceived>(e => e.ExchangeName = "message-received-consumer");
 builder.Services.AddConsumer<SyncMessageHandler, SyncUserMessage>(e => e.ExchangeName = "sync-message-consumer");
