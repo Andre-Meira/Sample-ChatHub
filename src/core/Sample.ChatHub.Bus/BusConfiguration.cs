@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using System;
 using System.Runtime.InteropServices.ObjectiveC;
@@ -24,21 +25,30 @@ public static class BusConfiguration
         where TConsumerHandler : IConsumer 
         where IMessage : class
     {        
-        var consumer = GetConsumerInterface<TConsumerHandler>();
+        var consumer = GetConsumerInterface<TConsumerHandler>(typeof(IConsumerHandler<>));
 
-        services.AddScoped(consumer, typeof(TConsumerHandler));
+        services.AddScoped(consumer, typeof(TConsumerHandler));        
 
         IConsumerOptions optitons = new ConsumerOptions();
         consumerOptions.Invoke(optitons);
 
+        if (optitons.FaultConfig is not null && optitons.FaultConfig.Consumer is not null)
+        {
+            var intarfaceFault = GetConsumerInterface<TConsumerHandler>(typeof(IConsumerFaultHandler<>));
+            services.AddScoped(intarfaceFault, optitons.FaultConfig.Consumer);
+        }
+
         ServiceProvider provider = services.BuildServiceProvider();
 
-        IServiceScopeFactory providerFactory = provider.GetService<IServiceScopeFactory>()!;        
+        IServiceScopeFactory providerFactory = provider.GetService<IServiceScopeFactory>()!;
+        ILoggerFactory logFactory = provider.GetService<ILoggerFactory>()!;
+
+        var log = logFactory.CreateLogger<ConsumerHandlerBase<IMessage>>();
 
         services.AddHostedService(e =>
         {
             var consumerHandlerInstance = Activator.CreateInstance(typeof(ConsumerHandlerBase<IMessage>),
-                _connection, providerFactory, optitons);                       
+                _connection, providerFactory, optitons, log);         
 
             if (consumerHandlerInstance is null)
             {
@@ -52,10 +62,8 @@ public static class BusConfiguration
     }
 
 
-    private static Type GetConsumerInterface<TConsumerHandler>()
-    {
-        Type baseType = typeof(IConsumerHandler<>);
-
+    private static Type GetConsumerInterface<TConsumerHandler>(Type baseType)
+    {        
         var consumer = typeof(TConsumerHandler).GetInterface(baseType.Name);
 
         if (consumer is null)

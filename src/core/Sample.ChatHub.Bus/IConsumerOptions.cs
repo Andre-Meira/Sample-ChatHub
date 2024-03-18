@@ -9,7 +9,7 @@ public interface IConsumerOptions
     public string RoutingKey { get; set; }
     public string ExchageType { get; set; }
     public ushort PrefetchCount { get; set; }
-    public Action<IFaultConsumerConfiguration>? FaultConfig { get; set; } 
+    public IFaultConsumerConfiguration? FaultConfig { get; set; } 
 }
 
 
@@ -20,5 +20,5 @@ internal record ConsumerOptions : IConsumerOptions
     public string ExchageType { get; set; } = ExchangeType.Direct;
     public ushort PrefetchCount { get; set; } = 0;
 
-    public Action<IFaultConsumerConfiguration>? FaultConfig { get; set; } = null;
+    public IFaultConsumerConfiguration? FaultConfig { get; set; }
 }
