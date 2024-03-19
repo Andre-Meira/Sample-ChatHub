@@ -23,7 +23,7 @@ builder.Services.AddGrpc();
 
 builder.Services.AddGrpcClient<UserSync.UserSyncClient>(e =>
 {
-    e.Address = new(builder.Configuration["UrlServer"]!);
+    e.Address = new(builder.Configuration["UrlGrpcServer"]!);
     
     e.ChannelOptionsActions.Add((opt) =>
     {
