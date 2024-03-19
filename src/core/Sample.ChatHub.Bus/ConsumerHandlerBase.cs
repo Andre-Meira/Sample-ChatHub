@@ -118,11 +118,7 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
 
     private async Task RetryMessageAsync(TMessage message, BasicDeliverEventArgs basicDeliver, Exception exception)
     {
-        if (IsRetryMessage == false)
-        {
-            _channel.BasicNack(basicDeliver.DeliveryTag, false, false);
-            return;
-        }
+        if (IsRetryMessage == false) return;
 
         IBasicProperties properties = basicDeliver.BasicProperties ?? _channel.CreateBasicProperties();
 
