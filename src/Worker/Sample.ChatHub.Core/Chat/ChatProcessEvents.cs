@@ -12,11 +12,11 @@ public sealed class ChatProcessStream : IChatProcessStream
 {    
     private readonly IChatEventsRepositore _chatEvents;
     private readonly IChatDecoratorProjection _chatDecoratorProjection;
-    private readonly IRepositoreProjection<ChatMembers, ChatMembersFilter> _repositoreProjection;
+    private readonly IRepositoreProjection<ChatMembers> _repositoreProjection;
 
     public ChatProcessStream(IChatEventsRepositore chatEvents,
         IChatDecoratorProjection chatDecoratorProjection,
-        IRepositoreProjection<ChatMembers, ChatMembersFilter> repositoreProjection)
+        IRepositoreProjection<ChatMembers> repositoreProjection)
     {
         _chatEvents = chatEvents;
         _chatDecoratorProjection = chatDecoratorProjection;
@@ -27,8 +27,7 @@ public sealed class ChatProcessStream : IChatProcessStream
     {
         var chatsId = new List<Guid>();
 
-        IAsyncEnumerable<ChatMembers> chats = _repositoreProjection.FindByFilterAsync(
-            new ChatMembersFilter { IdUser = userId });
+        IAsyncEnumerable<ChatMembers> chats = _repositoreProjection.FindByFilterAsync(e => e.Users.Contains(userId));
 
         await foreach (ChatMembers chat in chats)
         {           

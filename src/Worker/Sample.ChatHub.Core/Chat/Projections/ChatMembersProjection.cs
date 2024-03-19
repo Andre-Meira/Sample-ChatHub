@@ -9,10 +9,10 @@ public sealed class ChatMembersProjection : ChatDecoratorProjection
 {
     private Type[] EventsTypes = [typeof(ChatCreated), typeof(UserJoinedChat), typeof(UserLeftChat)];
 
-    private readonly IRepositoreProjection<ChatMembers, ChatMembersFilter> _repositoreProjection;
+    private readonly IRepositoreProjection<ChatMembers> _repositoreProjection;
 
     public ChatMembersProjection(IChatDecoratorProjection projection, 
-        IRepositoreProjection<ChatMembers, ChatMembersFilter> repositoreProjection) : base(projection)
+        IRepositoreProjection<ChatMembers> repositoreProjection) : base(projection)
     {
         _repositoreProjection = repositoreProjection;
     }
@@ -80,10 +80,4 @@ public record ChatMembers : IAggregateProjection
         Users.Remove(@event.UserId);
         return this;
     }
-}
-
-public record ChatMembersFilter
-{
-    public Guid IdUser { get; set; } = Guid.Empty;
-    public Guid IdChannel { get; set; } = Guid.Empty;
 }

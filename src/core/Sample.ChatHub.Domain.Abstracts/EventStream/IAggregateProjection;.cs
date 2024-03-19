@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using System.Linq.Expressions;
 
 namespace Sample.ChatHub.Domain.Abstracts.EventStream;
 
@@ -8,15 +8,9 @@ public interface IAggregateProjection
 }
 
 
-public interface IRepositoreProjection<TProjection, TFilter> where TProjection : IAggregateProjection
-{
-    Task<TProjection?> GetAsync(Guid IdProjection, CancellationToken cancellation = default);
-    Task ProjectAsync(TProjection projection, CancellationToken cancellation = default);
-    IAsyncEnumerable<TProjection> FindByFilterAsync(TFilter filter);
-}
-
 public interface IRepositoreProjection<TProjection> where TProjection : IAggregateProjection
 {
     Task<TProjection?> GetAsync(Guid IdProjection, CancellationToken cancellation = default);
-    Task ProjectAsync(TProjection projection, CancellationToken cancellation = default);    
+    Task ProjectAsync(TProjection projection, CancellationToken cancellation = default);
+    IAsyncEnumerable<TProjection> FindByFilterAsync(Expression<Func<TProjection, bool>> filter);
 }

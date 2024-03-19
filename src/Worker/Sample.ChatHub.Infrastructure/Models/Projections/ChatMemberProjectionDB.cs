@@ -1,23 +1,13 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using Sample.ChatHub.Worker.Core.Chat.Projections;
-using System.Runtime.Serialization;
+﻿using  Sample.ChatHub.Worker.Core.Chat.Projections;
 
 namespace Sample.ChatHub.Worker.Infrastructure.Models.Projections;
 
-internal sealed class ChatMemberProjectionDB 
+internal sealed record ChatMemberProjectionDB : ChatMembers
 {
-    public ChatMemberProjectionDB(ChatMembers chatMembers)
+    public ChatMemberProjectionDB(ChatMembers original) : base(original)
     {
-        Id = chatMembers.Id.ToString();
-        Data = chatMembers;
         Name = nameof(ChatMembers);
     }
-
-    [BsonId]
-    [DataMember]
-    public string Id { get; init; }
-
-    public ChatMembers Data { get; set; }
-    public string Name { get; init; }
+    
+    public string Name { get; init; } 
 }

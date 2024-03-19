@@ -17,9 +17,9 @@ internal sealed class MongoContext
 {
     private readonly IMongoDatabase _database;
 
-    public IMongoCollection<ChatEventStreamDB> Chat => _database.GetCollection<ChatEventStreamDB>("Chat");
-    public IMongoCollection<MessageEventStreamDB> Message => _database.GetCollection<MessageEventStreamDB>("Message");
-    public IMongoCollection<ChatMemberProjectionDB> ChatMembers => _database.GetCollection<ChatMemberProjectionDB>("Projections");
+    public IMongoCollection<ChatEventStreamDB> Chat => _database.GetCollection<ChatEventStreamDB>("EventStream-Chat");
+    public IMongoCollection<MessageEventStreamDB> Message => _database.GetCollection<MessageEventStreamDB>("EventStream-Message");
+    public IMongoCollection<ChatMemberProjectionDB> ChatMembers => _database.GetCollection<ChatMemberProjectionDB>("Projection-ChatMember");
 
     public MongoContext(IOptions<MongoOptions> options)
     {
@@ -35,6 +35,11 @@ internal sealed class MongoContextConfiguration
 {
     public static void RegisterConfig()
     {
+        #pragma warning disable CS0618
+        BsonDefaults.GuidRepresentation = GuidRepresentation.Standard;
+        BsonDefaults.GuidRepresentationMode = GuidRepresentationMode.V3;
+        #pragma warning restore CS06181
+
         BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
         BsonSerializer.RegisterSerializer(typeof(DateTime), new DateTimeSerializer(DateTimeKind.Local));
 
