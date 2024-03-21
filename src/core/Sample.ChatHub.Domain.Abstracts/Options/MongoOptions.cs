@@ -6,7 +6,7 @@ public class MongoOptions
 
     public string Connection { get; set; } = null!;
 
-    public string DatabaseName { get; set; } = null!;   
+    public string DatabaseName { get; set; } = null!;
 
     public MongoOptions() { }
 }

@@ -5,5 +5,5 @@ public interface IChatEventsRepositore
 {
     public IEnumerable<IChatEventStream> GetEvents(Guid idChat);
 
-    public Task IncressEvent(IChatEventStream @event);    
+    public Task IncressEvent(IChatEventStream @event);
 }

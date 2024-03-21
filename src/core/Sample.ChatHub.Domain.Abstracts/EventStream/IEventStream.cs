@@ -7,7 +7,7 @@
 /// </summary>
 public interface IEventStream
 {
-    public Guid IdCorrelation { get; init; }   
-    public Guid UserId { get; init; }    
-    public DateTime DataProcessed { get; init; }    
+    public Guid IdCorrelation { get; init; }
+    public Guid UserId { get; init; }
+    public DateTime DataProcessed { get; init; }
 }

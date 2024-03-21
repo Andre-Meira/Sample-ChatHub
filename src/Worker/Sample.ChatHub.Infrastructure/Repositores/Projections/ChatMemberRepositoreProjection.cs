@@ -1,9 +1,7 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using Sample.ChatHub.Domain.Abstracts;
 using Sample.ChatHub.Domain.Abstracts.EventStream;
 using Sample.ChatHub.Infrastructure.Context;
-using Sample.ChatHub.Infrastructure.Models;
 using Sample.ChatHub.Worker.Core.Chat.Projections;
 using Sample.ChatHub.Worker.Infrastructure.Models.Projections;
 using System.Linq.Expressions;
@@ -45,12 +43,12 @@ internal sealed class ChatMemberRepositoreProjection : IRepositoreProjection<Cha
 
     public async IAsyncEnumerable<ChatMembers> FindByFilterAsync(Expression<Func<ChatMembers, bool>> filter)
     {
-        var expression = ExpressionHelper.ChangeParameter<ChatMembers, ChatMemberProjectionDB, bool>(filter);        
+        var expression = ExpressionHelper.ChangeParameter<ChatMembers, ChatMemberProjectionDB, bool>(filter);
 
         var events = await _context.ChatMembers.Find(expression).ToListAsync();
 
         foreach (var eventStream in events)
-        {            
+        {
             yield return eventStream;
         }
     }

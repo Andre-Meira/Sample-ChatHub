@@ -8,11 +8,11 @@ public record class UserJoinedChat : IChatEventStream
 
         IdCorrelation = chatId;
         DataProcessed = DateTime.Now;
-    }    
+    }
 
     public Guid IdCorrelation { get; init; }
     public DateTime DataProcessed { get; init; }
     public Guid UserId { get; init; }
 
-    public void Process(ChatHub chat) => chat.AddUser(UserId);    
+    public void Process(ChatHub chat) => chat.AddUser(UserId);
 }

@@ -30,7 +30,7 @@ public static class ContractExtensions
         Type messageType = typeof(IContract);
         ContractAttribute? infoAttribute = (ContractAttribute?)Attribute.GetCustomAttribute(messageType, typeof(ContractAttribute));
 
-        if(infoAttribute == null)
+        if (infoAttribute == null)
             throw new ArgumentException("O contrato não possui o atributo ContractAttribute");
 
         return infoAttribute.Exchange;
@@ -41,7 +41,7 @@ public static class ContractExtensions
         Type messageType = typeof(IContract);
         ContractAttribute? infoAttribute = (ContractAttribute?)Attribute.GetCustomAttribute(messageType, typeof(ContractAttribute));
 
-        if(infoAttribute == null)
+        if (infoAttribute == null)
             throw new ArgumentException("O contrato não possui o atributo ContractAttribute");
 
         return infoAttribute.ExchangeType;

@@ -1,5 +1,4 @@
-﻿using RabbitMQ.Client;
-using Sample.ChatHub.Bus;
+﻿using Sample.ChatHub.Bus;
 using Sample.ChatHub.Core.Chat;
 using Sample.ChatHub.Domain.Contracts.Messages;
 using Sample.ChatHub.Worker.Core.Messages.Events;

@@ -10,7 +10,7 @@ public interface IMessageProcessStream : IProcessorEventStream<MessageHub, IMess
 
 
 public sealed class MessageProcessStream : IMessageProcessStream
-{    
+{
     private readonly IMessageEventsRepositore _messageEvents;
     private readonly IChatProcessStream _chatEvents;
 
@@ -42,7 +42,7 @@ public sealed class MessageProcessStream : IMessageProcessStream
 
     public async Task Include(IMessageEventStream @event)
     {
-        ChatHub chat =  await _chatEvents.Process(@event.IdChat)
+        ChatHub chat = await _chatEvents.Process(@event.IdChat)
             .ConfigureAwait(false);
 
         if (chat.ChatId == Guid.Empty)

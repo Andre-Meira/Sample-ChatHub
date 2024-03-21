@@ -18,11 +18,11 @@ public static class InfrastructureImplementation
         var objectSerializer = new ObjectSerializer(x => true);
         BsonSerializer.RegisterSerializer(objectSerializer);
 
-        MongoContextConfiguration.RegisterConfig();   
+        MongoContextConfiguration.RegisterConfig();
         services.AddTransient<MongoContext>();
         services.AddScoped<IChatEventsRepositore, ChatEventsRepostiore>();
         services.AddScoped<IMessageEventsRepositore, MessageEventsRepostiore>();
-        services.AddScoped<IRepositoreProjection<ChatMembers>, ChatMemberRepositoreProjection> ();
+        services.AddScoped<IRepositoreProjection<ChatMembers>, ChatMemberRepositoreProjection>();
 
         return services;
     }

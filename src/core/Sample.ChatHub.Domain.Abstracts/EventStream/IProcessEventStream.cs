@@ -1,6 +1,6 @@
 ﻿namespace Sample.ChatHub.Domain.Abstracts.EventStream;
 
-public interface IProcessorEventStream<ProcessStream, EventStream>    
+public interface IProcessorEventStream<ProcessStream, EventStream>
     where ProcessStream : IAggregateStream<EventStream>
     where EventStream : IEventStream
 {

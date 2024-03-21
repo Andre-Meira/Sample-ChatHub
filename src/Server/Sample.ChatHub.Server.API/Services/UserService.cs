@@ -1,6 +1,4 @@
-﻿using System.Formats.Asn1;
-using System.Text;
-using Microsoft.Extensions.Caching.Distributed;
+﻿using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using Sample.ChatHub.Woker.API.Protos;
 
@@ -14,23 +12,23 @@ public interface IUserService
 
 class UserService : IUserService
 {
-    private IDistributedCache _cache;    
+    private IDistributedCache _cache;
     private readonly UserInfo.UserInfoClient _userClient;
 
     private DistributedCacheEntryOptions CacheEntryOptions = new DistributedCacheEntryOptions()
         .SetAbsoluteExpiration(TimeSpan.FromMinutes(15));
-    
 
-    public UserService(IDistributedCache cache, 
-        
+
+    public UserService(IDistributedCache cache,
+
         UserInfo.UserInfoClient userClient)
     {
         _cache = cache;
         _userClient = userClient;
     }
 
-    public async Task<UserChats> GetUserChats(Guid idUser, 
-        CancellationToken cancellationToken = default) 
+    public async Task<UserChats> GetUserChats(Guid idUser,
+        CancellationToken cancellationToken = default)
     {
         string? json = await _cache.GetStringAsync(idUser.ToString());
 
@@ -38,16 +36,16 @@ class UserService : IUserService
         {
             return JsonConvert.DeserializeObject<UserChats>(json)!;
         }
-        
+
         UserChats user = await SendRequestAsync(idUser);
 
         string jsonChat = JsonConvert.SerializeObject(user);
         await _cache.SetStringAsync(idUser.ToString(), jsonChat, CacheEntryOptions);
 
         return user;
-    }    
+    }
 
-    public async Task IncludeUserChat(Guid idUser, Guid idChat, 
+    public async Task IncludeUserChat(Guid idUser, Guid idChat,
         CancellationToken cancellationToken = default)
     {
         UserChats userChats = await GetUserChats(idUser).ConfigureAwait(false);
@@ -64,8 +62,8 @@ class UserService : IUserService
     private async Task<UserChats> SendRequestAsync(Guid idUser)
     {
         var userChat = new UserChats(idUser);
-        var request = new UserInfoRequest{ UserId = idUser.ToString() };
-        
+        var request = new UserInfoRequest { UserId = idUser.ToString() };
+
         UserChatsReponse reponse = await _userClient.GetUserChatsAsync(request)
             .ConfigureAwait(false);
 

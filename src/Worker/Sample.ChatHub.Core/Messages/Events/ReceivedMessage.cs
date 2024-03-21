@@ -1,11 +1,9 @@
-﻿using Sample.ChatHub.Core.Chat;
-
-namespace Sample.ChatHub.Worker.Core.Messages.Events;
+﻿namespace Sample.ChatHub.Worker.Core.Messages.Events;
 
 public class ReceivedMessage : IMessageEventStream
 {
     public ReceivedMessage(Guid idChat, Guid messageId, Guid userID)
-    {        
+    {
         MessageId = messageId;
         UserId = userID;
 
@@ -13,7 +11,7 @@ public class ReceivedMessage : IMessageEventStream
         IdCorrelation = messageId;
         DataProcessed = DateTime.Now;
     }
-        
+
     public Guid UserId { get; init; }
     public Guid MessageId { get; init; }
 
@@ -21,5 +19,5 @@ public class ReceivedMessage : IMessageEventStream
     public DateTime DataProcessed { get; init; }
     public Guid IdChat { get; init; }
 
-    public void Process(MessageHub chat) => chat.ReadMessage(UserId);    
+    public void Process(MessageHub chat) => chat.ReadMessage(UserId);
 }

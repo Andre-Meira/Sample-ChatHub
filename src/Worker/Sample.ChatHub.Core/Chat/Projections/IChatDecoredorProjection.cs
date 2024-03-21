@@ -16,11 +16,11 @@ public abstract class ChatDecoratorProjection : IChatDecoratorProjection
         _projection = projection;
     }
 
-    public virtual Task Apply(IChatEventStream @event, CancellationToken cancellation = default) => _projection.Apply(@event);    
+    public virtual Task Apply(IChatEventStream @event, CancellationToken cancellation = default) => _projection.Apply(@event);
 }
 
 
 public class DefauftProjection : IChatDecoratorProjection
 {
-    public Task Apply(IChatEventStream @event, CancellationToken cancellation = default) => Task.CompletedTask;    
+    public Task Apply(IChatEventStream @event, CancellationToken cancellation = default) => Task.CompletedTask;
 }

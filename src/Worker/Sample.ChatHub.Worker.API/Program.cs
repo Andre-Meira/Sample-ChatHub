@@ -24,7 +24,7 @@ builder.Services.AddGrpc();
 builder.Services.AddGrpcClient<UserSync.UserSyncClient>(e =>
 {
     e.Address = new(builder.Configuration["UrlGrpcServer"]!);
-    
+
     e.ChannelOptionsActions.Add((opt) =>
     {
         opt.UnsafeUseInsecureChannelCallCredentials = true;
@@ -38,25 +38,25 @@ builder.Services.AddGrpcClient<UserSync.UserSyncClient>(e =>
 
 builder.Services.AddScoped<SyncMessageService>();
 
-builder.Services.AddScoped<IChatProcessStream,ChatProcessStream>();
+builder.Services.AddScoped<IChatProcessStream, ChatProcessStream>();
 builder.Services.AddScoped<IMessageProcessStream, MessageProcessStream>();
 
 
 builder.Services.AddScoped<IChatDecoratorProjection, DefauftProjection>()
     .Decorate<IChatDecoratorProjection, ChatMembersProjection>();
 
-builder.Services.ConfigureInfrastructure();               
+builder.Services.ConfigureInfrastructure();
 
 builder.Services.AddOptions();
 builder.Services.Configure<BusOptions>(builder.Configuration.GetSection(BusOptions.Key));
-builder.Services.Configure<MongoOptions>(builder.Configuration.GetSection(MongoOptions.Key));                
+builder.Services.Configure<MongoOptions>(builder.Configuration.GetSection(MongoOptions.Key));
 builder.Services.AddBus(connectionFactory);
 
 builder.Services.AddConsumer<CreateChatHandlerConsumer, CreateChat>(e => e.ExchangeName = "create-chat-consumer");
 builder.Services.AddConsumer<UserJoinChatHandlerConsummer, UserJoinChat>(e => e.ExchangeName = "user-joinChat-consumer");
 builder.Services.AddConsumer<MessageReceivedHandlerConsumer, MessageReceived>(e => e.ExchangeName = "message-received-consumer");
 builder.Services.AddConsumer<SyncMessageHandler, SyncUserMessage>(e => e.ExchangeName = "sync-message-consumer");
-builder.Services.AddConsumer<SendMessageHandlerConsumer, SendMessage>(e=> e.ExchangeName = "send-message-consumer");
+builder.Services.AddConsumer<SendMessageHandlerConsumer, SendMessage>(e => e.ExchangeName = "send-message-consumer");
 
 var app = builder.Build();
 

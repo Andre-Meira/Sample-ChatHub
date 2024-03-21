@@ -7,7 +7,7 @@ public record MessageHub : IAggregateStream<IMessageEventStream>
     public Guid MessageId { get; set; }
     public Guid ChatId { get; set; }
     public Guid SenderId { get; set; }
-    
+
     public DateTime Timestamp { get; set; }
     public string Message { get; set; } = null!;
 
@@ -17,5 +17,5 @@ public record MessageHub : IAggregateStream<IMessageEventStream>
     public void ReadMessage(Guid idUser) => _readByUserIds.Add(idUser);
 
     public void Apply(IMessageEventStream @event) => @event.Process(this);
-    
+
 }

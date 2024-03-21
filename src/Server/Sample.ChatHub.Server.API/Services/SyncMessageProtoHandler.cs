@@ -12,7 +12,7 @@ public class SyncMessageProtoHandler : UserSync.UserSyncBase
     private readonly IHubContext<ChatHubServer, IChatHub> _hub;
     private readonly List<User> _usersOptions;
 
-    public SyncMessageProtoHandler(IHubContext<ChatHubServer, IChatHub> hub, 
+    public SyncMessageProtoHandler(IHubContext<ChatHubServer, IChatHub> hub,
         IConfiguration configuration)
     {
         _hub = hub;
@@ -22,7 +22,7 @@ public class SyncMessageProtoHandler : UserSync.UserSyncBase
     public override async Task<BoolValue> SyncMessage(SyncMessageRequest request, ServerCallContext context)
     {
         IChatHub userChat = _hub.Clients.User(request.UserId);
-        CancellationToken cancellationToken = context.CancellationToken; 
+        CancellationToken cancellationToken = context.CancellationToken;
 
         foreach (MessageList msg in request.Messages)
         {
@@ -30,12 +30,12 @@ public class SyncMessageProtoHandler : UserSync.UserSyncBase
 
             User user = _usersOptions.FirstOrDefault(e => e.Id == msg.SenderId)!;
 
-            var contextMessage = new ContextMessage(chatId, Guid.Parse(msg.SenderId), 
-                user.Name, msg.Text, date: DateTime.Parse(msg.DateTime));            
+            var contextMessage = new ContextMessage(chatId, Guid.Parse(msg.SenderId),
+                user.Name, msg.Text, date: DateTime.Parse(msg.DateTime));
 
             await userChat.ReceiveMessage(contextMessage);
         }
 
-        return new BoolValue{ Value = true };
+        return new BoolValue { Value = true };
     }
 }

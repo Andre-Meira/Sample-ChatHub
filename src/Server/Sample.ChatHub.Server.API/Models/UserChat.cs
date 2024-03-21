@@ -9,6 +9,6 @@ public record UserChats
     }
 
     public Guid UserId { get; init; }
-    public List<string> IdChats {get; set;}
+    public List<string> IdChats { get; set; }
 }
 

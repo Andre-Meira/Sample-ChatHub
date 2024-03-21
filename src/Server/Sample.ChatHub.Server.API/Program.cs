@@ -9,20 +9,20 @@ using Sample.ChatHub.Woker.API.Protos;
 var connectionFactory = new ConnectionFactory();
 connectionFactory.Password = "guest";
 connectionFactory.UserName = "guest";
-connectionFactory.HostName = "localhost";    
+connectionFactory.HostName = "localhost";
 
 var builder = WebApplication.CreateBuilder(args);
 
- builder.Services.AddDistributedRedisCache(options =>
-            {
-                options.Configuration = builder.Configuration["ConnectionStringsRedis"]!;                    
-                options.InstanceName = "";
-            });
+builder.Services.AddDistributedRedisCache(options =>
+           {
+               options.Configuration = builder.Configuration["ConnectionStringsRedis"]!;
+               options.InstanceName = "";
+           });
 
 builder.Services.AddGrpcClient<UserInfo.UserInfoClient>(e =>
 {
     e.Address = new(builder.Configuration["WokerGrpc"]!);
-    
+
     e.ChannelOptionsActions.Add((opt) =>
     {
         opt.UnsafeUseInsecureChannelCallCredentials = true;
@@ -37,7 +37,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => 
+builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition(BasicAuthenticationHandler.Schema, new OpenApiSecurityScheme()
     {

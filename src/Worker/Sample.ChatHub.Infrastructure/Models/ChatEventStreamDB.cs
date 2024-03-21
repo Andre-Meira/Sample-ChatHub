@@ -1,6 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using Sample.ChatHub.Core.Chat;
-using Sample.ChatHub.Domain.Abstracts.EventStream;
 using System.Runtime.Serialization;
 
 namespace Sample.ChatHub.Infrastructure.Models;
@@ -10,7 +9,7 @@ internal class ChatEventStreamDB
     public ChatEventStreamDB(IChatEventStream @event)
     {
         Event = @event;
-        IdCorrelation = @event.IdCorrelation.ToString();                 
+        IdCorrelation = @event.IdCorrelation.ToString();
         UserId = @event.UserId.ToString();
         EventName = nameof(EventName);
     }
@@ -20,7 +19,7 @@ internal class ChatEventStreamDB
     public MongoDB.Bson.ObjectId _id { get; set; }
 
     [DataMember]
-    public MongoDB.Bson.BsonString? _t { get; set; } 
+    public MongoDB.Bson.BsonString? _t { get; set; }
 
     public string EventName { get; init; }
 
@@ -28,5 +27,5 @@ internal class ChatEventStreamDB
 
     public string IdCorrelation { get; init; }
 
-    public string UserId { get; init; }    
+    public string UserId { get; init; }
 }

@@ -10,7 +10,7 @@ public class MessageEventStreamDB
     {
         Event = @event;
 
-        IdChat = @event.IdChat.ToString();  
+        IdChat = @event.IdChat.ToString();
         IdCorrelation = @event.IdCorrelation.ToString();
         UserId = @event.UserId.ToString();
     }
@@ -26,7 +26,7 @@ public class MessageEventStreamDB
 
     public string IdCorrelation { get; init; }
 
-    public string UserId { get; init; }    
+    public string UserId { get; init; }
 
     public string IdChat { get; init; }
 }

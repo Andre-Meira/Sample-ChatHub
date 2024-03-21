@@ -11,7 +11,7 @@ public sealed class ChatMembersProjection : ChatDecoratorProjection
 
     private readonly IRepositoreProjection<ChatMembers> _repositoreProjection;
 
-    public ChatMembersProjection(IChatDecoratorProjection projection, 
+    public ChatMembersProjection(IChatDecoratorProjection projection,
         IRepositoreProjection<ChatMembers> repositoreProjection) : base(projection)
     {
         _repositoreProjection = repositoreProjection;
@@ -57,7 +57,7 @@ public record ChatMembers : IAggregateProjection
         Id = idChat;
         Users = new List<Guid> { };
     }
-    
+
     public List<Guid> Users { get; set; }
     public Guid Id { get; set; }
 

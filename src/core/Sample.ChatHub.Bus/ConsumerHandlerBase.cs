@@ -1,26 +1,26 @@
-﻿using System.Text;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Sample.ChatHub.Bus.Models;
+using System.Text;
 
 namespace Sample.ChatHub.Bus;
 
 public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
-    where TMessage : class 
+    where TMessage : class
 {
     #region Configuracao
     private readonly IModel _channel;
-    
+
     private readonly IConsumerOptions _consumerOptions;
     private readonly IConsumerHandler<TMessage> _consumerHandler;
     private readonly IConsumerFaultHandler<TMessage>? _consumerFaultHandler;
 
-    private readonly ILogger<ConsumerHandlerBase<TMessage>> _logger;    
-    private readonly IFaultConsumerConfiguration? _configDeadLetter;    
+    private readonly ILogger<ConsumerHandlerBase<TMessage>> _logger;
+    private readonly IFaultConsumerConfiguration? _configDeadLetter;
 
     protected string MessageExchangeName => ContractExtensions.GetExchangeContract<TMessage>();
     protected string MessageExchangeType => ContractExtensions.GetExchangeTypeContract<TMessage>();
@@ -34,19 +34,19 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
         ILogger<ConsumerHandlerBase<TMessage>> logger)
     {
         using var service = serviceScopeFactory.CreateScope();
-            
+
         if (consumerOptions.FaultConfig is not null)
-        {            
+        {
             _consumerFaultHandler = service.ServiceProvider.GetRequiredService<IConsumerFaultHandler<TMessage>>();
-            _configDeadLetter = consumerOptions.FaultConfig;            
+            _configDeadLetter = consumerOptions.FaultConfig;
         }
 
         _consumerHandler = service.ServiceProvider.GetRequiredService<IConsumerHandler<TMessage>>();
-       
+
         _channel = connection.CreateModel();
         _consumerOptions = consumerOptions;
 
-        Initilize();            
+        Initilize();
         _logger = logger;
     }
 
@@ -55,7 +55,7 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
         var args = new Dictionary<string, object> { };
 
         if (IsRetryMessage)
-        {           
+        {
             args.Add("x-delayed-type", _consumerOptions.ExchageType);
 
             _channel.ExchangeDeclare(ExchageNameRetry, "x-delayed-message", true, false, args);
@@ -72,7 +72,7 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
         _channel.ExchangeBind(_consumerOptions.ExchangeName, MessageExchangeName, _consumerOptions.RoutingKey);
 
         if (_consumerOptions.PrefetchCount > 0) _channel.BasicQos(0, _consumerOptions.PrefetchCount, false);
-        
+
     }
     #endregion        
 
@@ -89,10 +89,10 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
             {
                 _channel.BasicConsume(ExchageNameRetry, false, consumerEvent);
             }
-        });        
+        });
     }
 
-    private async Task ReceivedMessageAsync(BasicDeliverEventArgs args) 
+    private async Task ReceivedMessageAsync(BasicDeliverEventArgs args)
     {
         TMessage message = TransformMessage(args);
 
@@ -107,7 +107,7 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
             await RetryMessageAsync(message, args, err);
         }
     }
-        
+
     private TMessage TransformMessage(BasicDeliverEventArgs eventArgs)
     {
         var body = eventArgs.Body.ToArray();
@@ -124,7 +124,7 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
 
         if (properties.IsHeadersPresent() == false)
         {
-            properties.Headers = new Dictionary<string, object> 
+            properties.Headers = new Dictionary<string, object>
             { { "x-delay", _configDeadLetter!.TimeSpan.TotalMilliseconds } };
         }
 
@@ -134,13 +134,13 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
         properties.Headers.TryGetValue("count", out countCurrent);
         int count = countCurrent == null ? 1 : (int)countCurrent + 1;
         properties.Headers["count"] = count;
-        
+
         if (count > _configDeadLetter!.Attempt)
         {
             if (_consumerFaultHandler is not null)
             {
                 var context = new ConsumerContext<TMessage>(message, basicDeliver.DeliveryTag, _channel);
-                await _consumerFaultHandler.Consumer(context, exception);                                
+                await _consumerFaultHandler.Consumer(context, exception);
             }
 
             _channel.BasicNack(basicDeliver.DeliveryTag, false, false);
@@ -148,7 +148,7 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
 
             return;
         }
-        
+
         string json = JsonConvert.SerializeObject(message);
         var body = Encoding.UTF8.GetBytes(json);
 

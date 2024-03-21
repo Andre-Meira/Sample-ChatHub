@@ -9,7 +9,7 @@ public interface IChatProcessStream : IProcessorEventStream<ChatHub, IChatEventS
 }
 
 public sealed class ChatProcessStream : IChatProcessStream
-{    
+{
     private readonly IChatEventsRepositore _chatEvents;
     private readonly IChatDecoratorProjection _chatDecoratorProjection;
     private readonly IRepositoreProjection<ChatMembers> _repositoreProjection;
@@ -30,8 +30,8 @@ public sealed class ChatProcessStream : IChatProcessStream
         IAsyncEnumerable<ChatMembers> chats = _repositoreProjection.FindByFilterAsync(e => e.Users.Contains(userId));
 
         await foreach (ChatMembers chat in chats)
-        {           
-            if (chat.Users.Contains(userId)) chatsId.Add(chat.Id);                
+        {
+            if (chat.Users.Contains(userId)) chatsId.Add(chat.Id);
         }
 
         return chatsId;
@@ -47,7 +47,7 @@ public sealed class ChatProcessStream : IChatProcessStream
         ChatHub stream = await Process(@event.IdCorrelation);
         stream.Apply(@event);
 
-        await _chatEvents.IncressEvent(@event).ConfigureAwait(false);        
+        await _chatEvents.IncressEvent(@event).ConfigureAwait(false);
         await _chatDecoratorProjection.Apply(@event).ConfigureAwait(false);
     }
 

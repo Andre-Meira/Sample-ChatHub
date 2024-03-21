@@ -1,17 +1,16 @@
 ﻿using Google.Protobuf.WellKnownTypes;
-using Grpc.Net.ClientFactory;
 using Sample.ChatHub.Server.API.Protos;
 using Sample.ChatHub.Worker.Core.Messages;
 
 namespace Sample.ChatHub.Worker.API.Services;
 
-internal sealed class SyncMessageService 
+internal sealed class SyncMessageService
 {
     private readonly UserSync.UserSyncClient _userSyncClient;
 
     public SyncMessageService(UserSync.UserSyncClient userSync)
     {
-        _userSyncClient = userSync;     
+        _userSyncClient = userSync;
     }
 
     public async Task<bool> SyncMessagen(Guid userID, List<MessageHub> messageHubs)
@@ -32,7 +31,7 @@ internal sealed class SyncMessageService
 
             syncMessageRequest.Messages.Add(messageList);
         }
-        
+
 
         BoolValue @bool = await _userSyncClient.SyncMessageAsync(syncMessageRequest);
 

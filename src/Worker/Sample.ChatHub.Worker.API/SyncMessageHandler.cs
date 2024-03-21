@@ -1,5 +1,4 @@
-﻿using RabbitMQ.Client;
-using Sample.ChatHub.Bus;
+﻿using Sample.ChatHub.Bus;
 using Sample.ChatHub.Core.Chat;
 using Sample.ChatHub.Domain.Contracts.Messages;
 using Sample.ChatHub.Worker.API.Services;
@@ -13,7 +12,7 @@ internal class SyncMessageHandler : IConsumerHandler<SyncUserMessage>
     private readonly IMessageProcessStream _process;
     private readonly SyncMessageService _syncService;
 
-    public SyncMessageHandler(ILogger<SyncMessageHandler> logger, 
+    public SyncMessageHandler(ILogger<SyncMessageHandler> logger,
         IMessageProcessStream process, SyncMessageService syncService)
     {
         _logger = logger;
@@ -25,7 +24,7 @@ internal class SyncMessageHandler : IConsumerHandler<SyncUserMessage>
     {
         Guid userId = context.Message.UserId;
         IEnumerable<MessageHub> messages = await _process.GetMessagesToBeConfirmed(userId);
-        
+
         var messageList = messages.Where(e => e.MessageId != Guid.Empty).ToList();
 
         if (messages.Any() == false) return;
@@ -35,9 +34,9 @@ internal class SyncMessageHandler : IConsumerHandler<SyncUserMessage>
 
         if (result == false)
         {
-            _logger.LogWarning("User not sync {0}.", userId);            
+            _logger.LogWarning("User not sync {0}.", userId);
         }
-        
+
         context.NotifyConsumed();
     }
 }

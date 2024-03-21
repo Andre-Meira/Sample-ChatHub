@@ -7,17 +7,17 @@ namespace Sample.ChatHub.Core.Tests.Chat;
 public class Chat_Tests_Sucess
 {
     #region Mocks       
-    private readonly IChatProcessStream _chatProcess;    
-    private readonly IChatEventsRepositore _chatEventsRepositore;    
-    private readonly IList<IChatEventStream>  chatEventStreams = new List<IChatEventStream>();
+    private readonly IChatProcessStream _chatProcess;
+    private readonly IChatEventsRepositore _chatEventsRepositore;
+    private readonly IList<IChatEventStream> chatEventStreams = new List<IChatEventStream>();
     private Guid IdChat = Guid.NewGuid();
 
     public Chat_Tests_Sucess()
-    {        
+    {
         var chatRepositoreRepositore = new Mock<IChatEventsRepositore>();
 
         chatRepositoreRepositore.Setup(s => s.IncressEvent(It.IsAny<IChatEventStream>()))
-            .Callback<IChatEventStream>(chatEventStreams.Add); 
+            .Callback<IChatEventStream>(chatEventStreams.Add);
 
         chatRepositoreRepositore.Setup(s => s.GetEvents(It.IsAny<Guid>()))
             .Returns((Guid id) => chatEventStreams.Where(e => e.IdCorrelation == id));
@@ -28,7 +28,7 @@ public class Chat_Tests_Sucess
     #endregion
 
 
-    [Fact]    
+    [Fact]
     public async Task Criar_Chat_Retonar_Sucesso()
     {
         Guid id = Guid.NewGuid();
@@ -38,7 +38,7 @@ public class Chat_Tests_Sucess
 
         var chat = await _chatProcess.Process(chatCreated.IdCorrelation);
 
-        Assert.NotNull(chat.Name);   
+        Assert.NotNull(chat.Name);
     }
 
 
@@ -63,7 +63,7 @@ public class Chat_Tests_Sucess
     [Fact]
     public async Task Sair_do_Chat_Retona_Sucesso()
     {
-        Guid idOwner = Guid.NewGuid();        
+        Guid idOwner = Guid.NewGuid();
 
         ChatCreated chatCreated = new ChatCreated(IdChat, "Chat Teste", idOwner);
         await _chatProcess.Include(chatCreated);

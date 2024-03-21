@@ -1,9 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
-using System;
-using System.Runtime.InteropServices.ObjectiveC;
 
 namespace Sample.ChatHub.Bus;
 
@@ -11,23 +8,23 @@ public static class BusConfiguration
 {
     private static IConnection? _connection;
 
-    public static IServiceCollection AddBus(this IServiceCollection services, 
+    public static IServiceCollection AddBus(this IServiceCollection services,
         IConnectionFactory connectionFactory)
     {
         _connection = connectionFactory.CreateConnection();
-        services.AddScoped<IPublishContext,PublishContext>(e => new PublishContext(_connection));
+        services.AddScoped<IPublishContext, PublishContext>(e => new PublishContext(_connection));
 
         return services;
     }
 
     public static IServiceCollection AddConsumer<TConsumerHandler, IMessage>(
-        this IServiceCollection services, Action<IConsumerOptions> consumerOptions) 
-        where TConsumerHandler : IConsumer 
+        this IServiceCollection services, Action<IConsumerOptions> consumerOptions)
+        where TConsumerHandler : IConsumer
         where IMessage : class
-    {        
+    {
         var consumer = GetConsumerInterface<TConsumerHandler>(typeof(IConsumerHandler<>));
 
-        services.AddScoped(consumer, typeof(TConsumerHandler));        
+        services.AddScoped(consumer, typeof(TConsumerHandler));
 
         IConsumerOptions optitons = new ConsumerOptions();
         consumerOptions.Invoke(optitons);
@@ -48,7 +45,7 @@ public static class BusConfiguration
         services.AddHostedService(e =>
         {
             var consumerHandlerInstance = Activator.CreateInstance(typeof(ConsumerHandlerBase<IMessage>),
-                _connection, providerFactory, optitons, log);         
+                _connection, providerFactory, optitons, log);
 
             if (consumerHandlerInstance is null)
             {
@@ -63,7 +60,7 @@ public static class BusConfiguration
 
 
     private static Type GetConsumerInterface<TConsumerHandler>(Type baseType)
-    {        
+    {
         var consumer = typeof(TConsumerHandler).GetInterface(baseType.Name);
 
         if (consumer is null)

@@ -1,5 +1,4 @@
-﻿using RabbitMQ.Client;
-using Sample.ChatHub.Bus;
+﻿using Sample.ChatHub.Bus;
 using Sample.ChatHub.Core.Chat;
 using Sample.ChatHub.Domain.Contracts.Messages;
 using Sample.ChatHub.Worker.Core.Messages.Events;
@@ -17,7 +16,7 @@ internal class MessageReceivedHandlerConsumer : IConsumerHandler<MessageReceived
 
     public async Task Consumer(IConsumerContext<MessageReceived> context)
     {
-        var @event = new ReceivedMessage(context.Message.IdChat, context.Message.IdMessage, 
+        var @event = new ReceivedMessage(context.Message.IdChat, context.Message.IdMessage,
             context.Message.IdUser);
 
         await _messageProcess.Include(@event).ConfigureAwait(false);

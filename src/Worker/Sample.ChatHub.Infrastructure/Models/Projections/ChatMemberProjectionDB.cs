@@ -1,4 +1,4 @@
-﻿using  Sample.ChatHub.Worker.Core.Chat.Projections;
+﻿using Sample.ChatHub.Worker.Core.Chat.Projections;
 
 namespace Sample.ChatHub.Worker.Infrastructure.Models.Projections;
 
@@ -8,6 +8,6 @@ internal sealed record ChatMemberProjectionDB : ChatMembers
     {
         Name = nameof(ChatMembers);
     }
-    
-    public string Name { get; init; } 
+
+    public string Name { get; init; }
 }

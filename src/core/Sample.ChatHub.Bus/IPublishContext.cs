@@ -1,12 +1,12 @@
-﻿using System.Text;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RabbitMQ.Client;
+using System.Text;
 
 namespace Sample.ChatHub.Bus;
 
 public interface IPublishContext
 {
-    public Task PublishMessage<TMessage>(TMessage message, string routingKey = "") 
+    public Task PublishMessage<TMessage>(TMessage message, string routingKey = "")
         where TMessage : class;
 }
 
@@ -16,12 +16,12 @@ internal class PublishContext : IPublishContext, IDisposable
     private readonly IModel _channel;
 
     public PublishContext(IConnection connection)
-    {        
+    {
         _channel = connection.CreateModel();
     }
 
     public void Dispose() => _channel.Dispose();
-    
+
     public Task PublishMessage<TMessage>(TMessage message, string routingKey = "") where TMessage : class
     {
         string exchange = ContractExtensions.GetExchangeContract<TMessage>();
@@ -31,7 +31,7 @@ internal class PublishContext : IPublishContext, IDisposable
 
         IBasicProperties properties = _channel.CreateBasicProperties();
         properties.DeliveryMode = 2;
-        properties.ContentType = "application/json";        
+        properties.ContentType = "application/json";
 
         string json = JsonConvert.SerializeObject(message);
         var body = Encoding.UTF8.GetBytes(json);

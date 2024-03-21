@@ -1,5 +1,4 @@
 ﻿using Sample.ChatHub.Domain.Abstracts.EventStream;
-using Sample.ChatHub.Domain.Contracts.Messages;
 
 namespace Sample.ChatHub.Core.Chat;
 
@@ -7,7 +6,7 @@ public record ChatHub : IAggregateStream<IChatEventStream>
 {
     public ChatHub()
     {
-        Users = new List<Guid>();        
+        Users = new List<Guid>();
     }
 
     public Guid ChatId { get; private set; }
@@ -15,17 +14,17 @@ public record ChatHub : IAggregateStream<IChatEventStream>
     public Guid UserCreated { get; set; }
 
     public List<Guid> Users { get; private set; }
-    
+
     public void Apply(IChatEventStream @event) => @event.Process(this);
-    
+
 
     public void AddUser(Guid user)
     {
         bool userExist = Users.Contains(user);
 
-        if (userExist)        
-            throw new ArgumentException("Usuario já faz parte do chat.");        
-            
+        if (userExist)
+            throw new ArgumentException("Usuario já faz parte do chat.");
+
         Users.Add(user);
     }
 
@@ -43,5 +42,5 @@ public record ChatHub : IAggregateStream<IChatEventStream>
             throw new ArgumentException("Já existe um id para esse chat.");
 
         ChatId = id;
-    }      
+    }
 }

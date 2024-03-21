@@ -26,7 +26,7 @@ public class ChatHubServer : BaseHub<IChatHub>
         _logger.LogInformation("{0} Connected from the server.", UserName);
         await this.SetChannelAsync();
 
-        var context = new ContextMessage(Guid.Empty, Guid.Empty, "Sistema",$"Bem vindo ao chat {UserName!}");        
+        var context = new ContextMessage(Guid.Empty, Guid.Empty, "Sistema", $"Bem vindo ao chat {UserName!}");
         await Clients.Client(Context.ConnectionId).ReceiveMessage(context);
 
         await _context.PublishMessage<SyncUserMessage>(new(UserId));
@@ -36,11 +36,11 @@ public class ChatHubServer : BaseHub<IChatHub>
     {
         _logger.LogInformation("{0} Disconnected from the server.", UserName);
         return base.OnDisconnectedAsync(exception);
-    } 
+    }
 
     public async Task SendMessage(Guid idChat, string message)
-    {        
-        var messageContext = new ContextMessage(idChat, UserId, UserName!,message);
+    {
+        var messageContext = new ContextMessage(idChat, UserId, UserName!, message);
         var contractMessage = new SendMessage(messageContext);
 
         UserChats userChats = await _userService.GetUserChats(UserId);
@@ -50,18 +50,18 @@ public class ChatHubServer : BaseHub<IChatHub>
             await _context.PublishMessage(contractMessage).ConfigureAwait(false);
 
             IChatHub client = Clients.GroupExcept(idChat.ToString(), Context.ConnectionId);
-            await client.ReceiveMessage(messageContext);   
-        }        
+            await client.ReceiveMessage(messageContext);
+        }
     }
 
-    public async Task AckMessage(Guid IdChat, Guid IdMessage)    
+    public async Task AckMessage(Guid IdChat, Guid IdMessage)
        => await _context.PublishMessage<MessageReceived>(new(IdChat, IdMessage, UserId))
             .ConfigureAwait(false);
-    
+
 
     private async Task SetChannelAsync()
     {
-        UserChats userChats =  await _userService.GetUserChats(UserId);        
+        UserChats userChats = await _userService.GetUserChats(UserId);
 
         foreach (string chat in userChats.IdChats)
         {

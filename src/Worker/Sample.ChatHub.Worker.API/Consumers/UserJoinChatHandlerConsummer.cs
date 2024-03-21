@@ -1,7 +1,6 @@
-﻿using RabbitMQ.Client;
-using Sample.ChatHub.Bus;
-using Sample.ChatHub.Core.Chat.Events;
+﻿using Sample.ChatHub.Bus;
 using Sample.ChatHub.Core.Chat;
+using Sample.ChatHub.Core.Chat.Events;
 using Sample.ChatHub.Domain.Contracts.Chat;
 
 namespace Sample.ChatHub.Worker.API.Consumers;

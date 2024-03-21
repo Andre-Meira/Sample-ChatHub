@@ -1,12 +1,10 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Sample.ChatHub.Bus;
 using Sample.ChatHub.Domain.Contracts;
 using Sample.ChatHub.Domain.Contracts.Chat;
 using Sample.ChatHub.Server.API;
+using System.ComponentModel.DataAnnotations;
 
 namespace Sample.ChatHub.API.Controllers.v1;
 
@@ -29,7 +27,7 @@ public class ChatHubController : DefaultController
     public async Task<IActionResult> Create([FromBody, Required] string name)
     {
         Guid IdChat = Guid.NewGuid();
-        CreateChat chat = new CreateChat(IdChat, name, UserID);        
+        CreateChat chat = new CreateChat(IdChat, name, UserID);
 
         await _context.PublishMessage(chat).ConfigureAwait(false);
         await _userService.IncludeUserChat(UserID, IdChat);

@@ -1,6 +1,5 @@
 ﻿using MongoDB.Driver;
 using Sample.ChatHub.Core.Chat;
-using Sample.ChatHub.Core.Chat.Events;
 using Sample.ChatHub.Infrastructure.Context;
 using Sample.ChatHub.Infrastructure.Models;
 
@@ -12,7 +11,7 @@ internal class ChatEventsRepostiore : IChatEventsRepositore
     public ChatEventsRepostiore(MongoContext context) => _context = context;
 
     public IEnumerable<IChatEventStream> GetEvents(Guid idCorrelation)
-    {       
+    {
         FilterDefinition<ChatEventStreamDB> filter = Builders<ChatEventStreamDB>.Filter
             .Eq(x => x.IdCorrelation, idCorrelation.ToString());
 
@@ -24,7 +23,7 @@ internal class ChatEventsRepostiore : IChatEventsRepositore
         return events;
     }
 
-    public Task IncressEvent(IChatEventStream @event) 
+    public Task IncressEvent(IChatEventStream @event)
         => _context.Chat.InsertOneAsync(new ChatEventStreamDB(@event));
 
 }

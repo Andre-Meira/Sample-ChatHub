@@ -9,7 +9,7 @@ public interface IConsumerOptions
     public string RoutingKey { get; set; }
     public string ExchageType { get; set; }
     public ushort PrefetchCount { get; set; }
-    public IFaultConsumerConfiguration? FaultConfig { get; set; } 
+    public IFaultConsumerConfiguration? FaultConfig { get; set; }
 }
 
 

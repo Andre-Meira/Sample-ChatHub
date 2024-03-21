@@ -1,5 +1,4 @@
-﻿using RabbitMQ.Client;
-using Sample.ChatHub.Bus;
+﻿using Sample.ChatHub.Bus;
 using Sample.ChatHub.Core.Chat;
 using Sample.ChatHub.Core.Chat.Events;
 using Sample.ChatHub.Domain.Contracts;
@@ -12,7 +11,7 @@ internal sealed class CreateChatHandlerConsumer : IConsumerHandler<CreateChat>
     private readonly IChatProcessStream _chatProcess;
 
     public CreateChatHandlerConsumer(
-        ILogger<CreateChatHandlerConsumer> logger, 
+        ILogger<CreateChatHandlerConsumer> logger,
         IChatProcessStream chatProcess)
     {
         _logger = logger;
@@ -26,7 +25,7 @@ internal sealed class CreateChatHandlerConsumer : IConsumerHandler<CreateChat>
         var message = context.Message;
         var @event = new ChatCreated(message.IdChat, message.Name, message.IdUser);
 
-        await _chatProcess.Include(@event).ConfigureAwait(false);        
+        await _chatProcess.Include(@event).ConfigureAwait(false);
 
         context.NotifyConsumed();
     }
