@@ -23,20 +23,27 @@ internal class SyncMessageHandler : IConsumerHandler<SyncUserMessage>
     public async Task Consumer(IConsumerContext<SyncUserMessage> context)
     {
         Guid userId = context.Message.UserId;
-        IEnumerable<MessageHub> messages = await _process.GetMessagesToBeConfirmed(userId);
 
-        var messageList = messages.Where(e => e.MessageId != Guid.Empty).ToList();
+        try
+        {            
+            IEnumerable<MessageHub> messages = await _process.GetMessagesToBeConfirmed(userId);
 
-        if (messages.Any() == false) return;
+            var messageList = messages.Where(e => e.MessageId != Guid.Empty).ToList();
 
-        bool result = await _syncService.SyncMessagen(userId, messageList)
-                .ConfigureAwait(false);
+            if (messages.Any() == false) return;
 
-        if (result == false)
-        {
-            _logger.LogWarning("User not sync {0}.", userId);
+            bool result = await _syncService
+                    .SyncMessagen(userId, messageList)
+                    .ConfigureAwait(false);
+
+            if (result == false) _logger.LogWarning("User not sync {0}.", userId);
+
+            context.NotifyConsumed();
         }
-
-        context.NotifyConsumed();
+        catch (Exception err)
+        {
+            context.NotifyFailConsumed();
+            _logger.LogError("Fail sync user {0}, error: {1}", userId, err.Message);
+        }
     }
 }

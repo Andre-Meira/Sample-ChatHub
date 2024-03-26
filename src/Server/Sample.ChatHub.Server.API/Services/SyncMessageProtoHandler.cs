@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using Sample.ChatHub.Domain.Contracts;
 using Sample.ChatHub.Domain.Contracts.Messages;
 using Sample.ChatHub.Server.API.Protos;
+using System.Globalization;
 
 namespace Sample.ChatHub.Server.API.Services;
 
@@ -25,13 +26,13 @@ public class SyncMessageProtoHandler : UserSync.UserSyncBase
         CancellationToken cancellationToken = context.CancellationToken;
 
         foreach (MessageList msg in request.Messages)
-        {
-            Guid chatId = Guid.Parse(msg.IdChat);
+        {            
+            User user = _usersOptions.FirstOrDefault(e => e.Id == msg.SenderId)!;            
+            
+            DateTime data = DateTime.ParseExact(msg.DateTime, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);    
 
-            User user = _usersOptions.FirstOrDefault(e => e.Id == msg.SenderId)!;
-
-            var contextMessage = new ContextMessage(chatId, Guid.Parse(msg.SenderId),
-                user.Name, msg.Text, date: DateTime.Parse(msg.DateTime));
+            var contextMessage = new ContextMessage(Guid.Parse(msg.IdChat), Guid.Parse(msg.SenderId),
+                user.Name, msg.Text, date: data);
 
             await userChat.ReceiveMessage(contextMessage);
         }
