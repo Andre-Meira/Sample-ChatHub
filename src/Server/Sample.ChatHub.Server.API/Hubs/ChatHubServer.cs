@@ -45,13 +45,18 @@ public class ChatHubServer : BaseHub<IChatHub>
 
         UserChats userChats = await _userService.GetUserChats(UserId);
 
-        if (userChats.IdChats.Contains(idChat.ToString()))
+        if (userChats.IdChats.Contains(idChat.ToString()) == false)
         {
-            await _context.PublishMessage(contractMessage).ConfigureAwait(false);
+            var context = new ContextMessage(Guid.Empty, Guid.Empty, "Sistema", $"Você não possui acesso a esse chat.");
+            await Clients.Client(Context.ConnectionId).ReceiveMessage(context);
 
-            IChatHub client = Clients.GroupExcept(idChat.ToString(), Context.ConnectionId);
-            await client.ReceiveMessage(messageContext);
+            return;
         }
+
+        await _context.PublishMessage(contractMessage).ConfigureAwait(false);
+
+        IChatHub client = Clients.GroupExcept(idChat.ToString(), Context.ConnectionId);
+        await client.ReceiveMessage(messageContext);
     }
 
     public async Task AckMessage(Guid IdChat, Guid IdMessage)
