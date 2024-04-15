@@ -1,13 +1,11 @@
-﻿using Newtonsoft.Json;
-using RabbitMQ.Client;
-using System.Text;
+﻿using RabbitMQ.Client;
+using Sample.ChatHub.Bus.Extesions;
 
 namespace Sample.ChatHub.Bus;
 
 public interface IPublishContext
 {
-    public Task PublishMessage<TMessage>(TMessage message, string routingKey = "")
-        where TMessage : class;
+    public Task PublishMessage<TMessage>(TMessage message, string routingKey = "", TimeSpan timeout = default) where TMessage : class;
 }
 
 
@@ -15,27 +13,14 @@ internal class PublishContext : IPublishContext, IDisposable
 {
     private readonly IModel _channel;
 
-    public PublishContext(IConnection connection)
-    {
-        _channel = connection.CreateModel();
-    }
+    public PublishContext(IConnection connection) => _channel = connection.CreateModel();
 
     public void Dispose() => _channel.Dispose();
 
-    public Task PublishMessage<TMessage>(TMessage message, string routingKey = "") where TMessage : class
+    public Task PublishMessage<TMessage>(TMessage message, string routingKey = "", TimeSpan timeout = default) 
+        where TMessage : class
     {
-        string exchange = ContractExtensions.GetExchangeContract<TMessage>();
-        string exchageType = ContractExtensions.GetExchangeTypeContract<TMessage>();
-
-        _channel.ExchangeDeclare(exchange, exchageType, true);
-
-        IBasicProperties properties = _channel.CreateBasicProperties();
-        properties.DeliveryMode = 2;
-        properties.ContentType = "application/json";
-
-        string json = JsonConvert.SerializeObject(message);
-        var body = Encoding.UTF8.GetBytes(json);
-
-        return Task.Run(() => _channel.BasicPublish(exchange: exchange, routingKey, properties, body));
+        timeout = timeout == default ? TimeSpan.FromSeconds(5) : timeout;
+        return _channel.PublishConfirmMessage(message, timeout, routingKey);    
     }
 }

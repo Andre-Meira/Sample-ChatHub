@@ -2,9 +2,9 @@
 
 
 [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
-public class ContractAttribute : Attribute
+public class MessageAttribute : Attribute
 {
-    public ContractAttribute(string exchange = "",
+    public MessageAttribute(string exchange = "",
         string exchangeType = "direct",
         string routingKey = "")
     {
@@ -19,32 +19,5 @@ public class ContractAttribute : Attribute
 
     public string RoutingKey { get; }
 
-
-}
-
-
-public static class ContractExtensions
-{
-    public static string GetExchangeContract<IContract>()
-    {
-        Type messageType = typeof(IContract);
-        ContractAttribute? infoAttribute = (ContractAttribute?)Attribute.GetCustomAttribute(messageType, typeof(ContractAttribute));
-
-        if (infoAttribute == null)
-            throw new ArgumentException("O contrato não possui o atributo ContractAttribute");
-
-        return infoAttribute.Exchange;
-    }
-
-    public static string GetExchangeTypeContract<IContract>()
-    {
-        Type messageType = typeof(IContract);
-        ContractAttribute? infoAttribute = (ContractAttribute?)Attribute.GetCustomAttribute(messageType, typeof(ContractAttribute));
-
-        if (infoAttribute == null)
-            throw new ArgumentException("O contrato não possui o atributo ContractAttribute");
-
-        return infoAttribute.ExchangeType;
-    }
 
 }

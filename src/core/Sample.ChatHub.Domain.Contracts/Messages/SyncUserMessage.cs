@@ -6,5 +6,5 @@ namespace Sample.ChatHub.Domain.Contracts.Messages;
 /// Contrato para sincronizar messages não recebidas pelo usuario
 /// </summary>
 /// <param name="user"></param>
-[Contract("sync-message")]
+[Message("sync-message")]
 public record SyncUserMessage(Guid UserId);

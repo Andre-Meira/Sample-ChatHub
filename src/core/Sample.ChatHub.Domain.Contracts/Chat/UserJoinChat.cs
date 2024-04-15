@@ -2,5 +2,5 @@
 
 namespace Sample.ChatHub.Domain.Contracts.Chat;
 
-[Contract("user-join-chat")]
+[Message("user-join-chat")]
 public record UserJoinChat(Guid ChatId, Guid UserId);

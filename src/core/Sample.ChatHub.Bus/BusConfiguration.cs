@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using Sample.ChatHub.Bus.Models;
+using Sample.ChatHub.Bus.Resilience;
 
 namespace Sample.ChatHub.Bus;
 
@@ -12,7 +14,7 @@ public static class BusConfiguration
         IConnectionFactory connectionFactory)
     {
         _connection = connectionFactory.CreateConnection();
-        services.AddScoped<IPublishContext, PublishContext>(e => new PublishContext(_connection));
+        services.AddScoped<IPublishContext, PublishContext>(e => new PublishContext(_connection));        
 
         return services;
     }
@@ -58,7 +60,7 @@ public static class BusConfiguration
         return services;
     }
 
-
+   
     private static Type GetConsumerInterface<TConsumerHandler>(Type baseType)
     {
         var consumer = typeof(TConsumerHandler).GetInterface(baseType.Name);
