@@ -60,7 +60,7 @@ public static class BusConfiguration
         return services;
     }
 
-   
+    
     private static Type GetConsumerInterface<TConsumerHandler>(Type baseType)
     {
         var consumer = typeof(TConsumerHandler).GetInterface(baseType.Name);
