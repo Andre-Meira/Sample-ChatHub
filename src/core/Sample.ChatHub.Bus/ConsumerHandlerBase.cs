@@ -6,6 +6,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Sample.ChatHub.Bus.Extesions;
 using Sample.ChatHub.Bus.Models;
+using Sample.ChatHub.Bus.Monitory;
 using System.Text;
 
 namespace Sample.ChatHub.Bus;
@@ -94,6 +95,9 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
 
     private async Task ReceivedMessageAsync(BasicDeliverEventArgs args)
     {
+        ActivityBus? activityBus = args.CreateConsumerActivityBus();
+        activityBus?.Start();
+
         TMessage message = TransformMessage(args);
 
         try
@@ -103,7 +107,12 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
         }
         catch (Exception err)
         {
-            _logger.LogError("Consumer: {0}, error: {1}", _consumerHandler.GetType().Name, err.Message);            
+            _logger.LogError("Consumer: {0}, error: {1}", _consumerHandler.GetType().Name, err.Message);
+            activityBus?.AddExceptionEvent(err);
+        }
+        finally
+        {
+            activityBus?.Stop();
         }
     }
 
@@ -112,14 +121,22 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
         try
         {
             var body = eventArgs.Body.ToArray();
-            var message = Encoding.UTF8.GetString(body);
+            var messageString = Encoding.UTF8.GetString(body);
 
-            return JsonConvert.DeserializeObject<TMessage>(message);
+            TMessage? message = JsonConvert.DeserializeObject<TMessage>(messageString);
+
+            if (message is null)
+            {
+                throw new ArgumentException("message is null");
+            }
+
+            return message;
         }
-        catch (Exception)
+        catch (Exception err)
         {
-            _logger.LogError("");
+            _logger.LogError("Fail transform body the message, err: {0}", err.Message);
             _channel.BasicReject(eventArgs.DeliveryTag, false);
+            throw;
         }
     }
     

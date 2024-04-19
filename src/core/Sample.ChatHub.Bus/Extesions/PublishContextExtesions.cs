@@ -44,14 +44,16 @@ internal static class PublishContextExtesions
             {
                 model.BasicPublish(exchange: exchange, routingKey, GetProperties(model), body);
                 model.WaitForConfirmsOrDie(timeout);
-            });
-
-            activityBus?.Stop();
+            });            
         }
         catch (Exception err)
         {
             activityBus?.AddExceptionEvent(err);
             throw;
+        }
+        finally
+        {
+            activityBus?.Stop();
         }
     }
         

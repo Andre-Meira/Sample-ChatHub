@@ -1,5 +1,4 @@
 ﻿using OpenTelemetry.Trace;
-using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Sample.ChatHub.Bus.Extesions;
 using System.Diagnostics;
@@ -69,5 +68,7 @@ public static class ActivityTraceExntesions
     {
         activity.SetTag("hostname", Dns.GetHostName());
         activity.SetTag("activity.id", activity.Id);
+        activity.SetTag("trace.id", activity.TraceId);
+        activity.SetTag("span.id", activity.SpanId);
     }
 }
