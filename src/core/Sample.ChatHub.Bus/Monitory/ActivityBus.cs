@@ -13,7 +13,7 @@ public readonly struct ActivityBus
             return;
 
         _activity.SetTag(key, value);
-    }    
+    }
 
     public void AddExceptionEvent(Exception exception)
     {
@@ -22,10 +22,10 @@ public readonly struct ActivityBus
         var exceptionMessage = exception.Message;
 
         var tags = new ActivityTagsCollection
-            {                
-                { "exceptions.message", exceptionMessage },
-                { "exception.type", exception.GetType().Name },
-                { "exception.stacktrace", exception.StackTrace }
+            {
+                { ActivityConstants.ExceptionMessage, exceptionMessage },
+                { ActivityConstants.ExceptionType, exception.GetType().Name },
+                { ActivityConstants.ExceptionStackTrace, exception.StackTrace }
             };
 
         var activityEvent = new ActivityEvent("exception", DateTimeOffset.UtcNow, tags);

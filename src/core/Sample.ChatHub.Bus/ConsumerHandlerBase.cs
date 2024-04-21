@@ -97,11 +97,10 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
     {
         ActivityBus? activityBus = args.CreateConsumerActivityBus();
         activityBus?.Start();
-
-        TMessage message = TransformMessage(args);
-
+        
         try
         {
+            TMessage message = TransformMessage(args);
             var context = new ConsumerContext<TMessage>(message, args.DeliveryTag, _channel);
             await _consumerHandler.Consumer(context).ConfigureAwait(false);
         }
