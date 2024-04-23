@@ -7,7 +7,7 @@
     <InvariantGlobalization>true</InvariantGlobalization>
     <UserSecretsId>ef6b428f-29ca-478e-bf01-f1ebaf35a608</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..</DockerfileContext>
+    <DockerfileContext>..\..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,7 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Sample.ChatHub.Bus\Sample.ChatHub.Bus.csproj" />
+    <ProjectReference Include="..\..\core\Sample.ChatHub.Bus\Sample.ChatHub.Bus.csproj" />
+    <ProjectReference Include="..\..\core\Sample.ChatHub.Domain.Abstracts\Sample.ChatHub.Domain.Abstracts.csproj" />
     <ProjectReference Include="..\..\core\Sample.ChatHub.Domain.Contracts\Sample.ChatHub.Domain.Contracts.csproj" />    
   </ItemGroup>
 

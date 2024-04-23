@@ -26,7 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D54939F9
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.ChatHub.Worker.Core.Tests", "tests\Sample.ChatHub.Core.Tests\Sample.ChatHub.Worker.Core.Tests.csproj", "{AE3DFA35-99DD-4D7E-BAA5-8A427CFD7C80}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.ChatHub.Bus", "src\Core\Sample.ChatHub.Bus\Sample.ChatHub.Bus.csproj", "{6448DD9B-FDB1-494E-9915-65CB38D3B3C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.ChatHub.Bus", "src\core\Sample.ChatHub.Bus\Sample.ChatHub.Bus.csproj", "{6448DD9B-FDB1-494E-9915-65CB38D3B3C9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{B0432D50-737C-4D39-86A5-D76534F3503A}"
 EndProject

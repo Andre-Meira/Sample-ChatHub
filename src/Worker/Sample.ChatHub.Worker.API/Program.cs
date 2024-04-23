@@ -12,12 +12,15 @@ using Sample.ChatHub.Worker.API.Consumers;
 using Sample.ChatHub.Worker.API.Services;
 using Sample.ChatHub.Worker.Core.Chat.Projections;
 
-var connectionFactory = new ConnectionFactory();
-connectionFactory.Password = "guest";
-connectionFactory.UserName = "guest";
-connectionFactory.HostName = "localhost";
-
 var builder = WebApplication.CreateBuilder(args);
+BusOptions? busOptions = builder.Configuration.GetSection(BusOptions.Key).Get<BusOptions>();
+
+var connectionFactory = new ConnectionFactory();
+connectionFactory.Password = busOptions?.Password;
+connectionFactory.UserName = busOptions?.UserName; 
+connectionFactory.HostName = busOptions?.Host;
+connectionFactory.VirtualHost = busOptions?.VirtualHost;
+
 
 builder.Services.AddGrpc();
 

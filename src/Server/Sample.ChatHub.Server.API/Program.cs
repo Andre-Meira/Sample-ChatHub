@@ -2,16 +2,20 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
 using Sample.ChatHub.Bus;
+using Sample.ChatHub.Domain.Abstracts.Options;
 using Sample.ChatHub.Server.API;
 using Sample.ChatHub.Server.API.Services;
 using Sample.ChatHub.Woker.API.Protos;
 
-var connectionFactory = new ConnectionFactory();
-connectionFactory.Password = "guest";
-connectionFactory.UserName = "guest";
-connectionFactory.HostName = "localhost";
-
 var builder = WebApplication.CreateBuilder(args);
+
+BusOptions? busOptions = builder.Configuration.GetSection(BusOptions.Key).Get<BusOptions>();
+
+var connectionFactory = new ConnectionFactory();
+connectionFactory.Password = busOptions?.Password;
+connectionFactory.UserName = busOptions?.UserName;
+connectionFactory.HostName = busOptions?.Host;
+connectionFactory.VirtualHost = busOptions?.VirtualHost;
 
 builder.Services.AddDistributedRedisCache(options =>
            {
