@@ -1,7 +1,6 @@
 ﻿using RabbitMQ.Client;
-using Sample.ChatHub.Bus.Models;
 
-namespace Sample.ChatHub.Bus;
+namespace Sample.ChatHub.Bus.Models;
 
 public interface IConsumerOptions
 {

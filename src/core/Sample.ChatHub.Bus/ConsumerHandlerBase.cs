@@ -4,7 +4,9 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using Sample.ChatHub.Bus.Extesions;
 using Sample.ChatHub.Bus.Models;
+using Sample.ChatHub.Bus.Monitory;
 using System.Text;
 
 namespace Sample.ChatHub.Bus;
@@ -21,9 +23,11 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
 
     private readonly ILogger<ConsumerHandlerBase<TMessage>> _logger;
     private readonly IFaultConsumerConfiguration? _configDeadLetter;
+    private readonly IConnection _connection;
 
-    protected string MessageExchangeName => ContractExtensions.GetExchangeContract<TMessage>();
-    protected string MessageExchangeType => ContractExtensions.GetExchangeTypeContract<TMessage>();
+
+    protected string MessageExchangeName => MessageExtesions.GetExchangeContract<TMessage>();
+    protected string MessageExchangeType => MessageExtesions.GetExchangeTypeContract<TMessage>();
 
     private bool IsRetryMessage => _configDeadLetter is not null;
     private string ExchageNameRetry => _consumerOptions.ExchangeName + "-retry";
@@ -43,25 +47,22 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
 
         _consumerHandler = service.ServiceProvider.GetRequiredService<IConsumerHandler<TMessage>>();
 
-        _channel = connection.CreateModel();
+        _channel = connection.CreateModel();        
         _consumerOptions = consumerOptions;
+        _connection = connection;
 
         Initilize();
         _logger = logger;
     }
 
     private void Initilize()
-    {
-        var args = new Dictionary<string, object> { };
-
+    {        
         if (IsRetryMessage)
-        {
-            args.Add("x-delayed-type", _consumerOptions.ExchageType);
-
-            _channel.ExchangeDeclare(ExchageNameRetry, "x-delayed-message", true, false, args);
+        {            
+            _channel.ExchangeDeclare(ExchageNameRetry, "topic", true, false);
             _channel.QueueDeclare(ExchageNameRetry, true, false, false);
             _channel.QueueBind(ExchageNameRetry, ExchageNameRetry, "", null);
-        }
+        }        
 
         _channel.ExchangeDeclare(_consumerOptions.ExchangeName, _consumerOptions.ExchageType, true);
         _channel.ExchangeDeclare(MessageExchangeName, MessageExchangeType.ToString(), true);
@@ -94,66 +95,54 @@ public class ConsumerHandlerBase<TMessage> : BackgroundService, IDisposable
 
     private async Task ReceivedMessageAsync(BasicDeliverEventArgs args)
     {
-        TMessage message = TransformMessage(args);
-
+        ActivityBus? activityBus = args.CreateConsumerActivityBus();
+        activityBus?.Start();
+        
         try
         {
+            TMessage message = TransformMessage(args);
             var context = new ConsumerContext<TMessage>(message, args.DeliveryTag, _channel);
             await _consumerHandler.Consumer(context).ConfigureAwait(false);
         }
         catch (Exception err)
         {
             _logger.LogError("Consumer: {0}, error: {1}", _consumerHandler.GetType().Name, err.Message);
-            await RetryMessageAsync(message, args, err);
+            activityBus?.AddExceptionEvent(err);
+        }
+        finally
+        {
+            activityBus?.Stop();
         }
     }
 
     private TMessage TransformMessage(BasicDeliverEventArgs eventArgs)
     {
-        var body = eventArgs.Body.ToArray();
-        var message = Encoding.UTF8.GetString(body);
-
-        return JsonConvert.DeserializeObject<TMessage>(message)!;
-    }
-
-    private async Task RetryMessageAsync(TMessage message, BasicDeliverEventArgs basicDeliver, Exception exception)
-    {
-        if (IsRetryMessage == false) return;
-
-        IBasicProperties properties = basicDeliver.BasicProperties ?? _channel.CreateBasicProperties();
-
-        if (properties.IsHeadersPresent() == false)
+        try
         {
-            properties.Headers = new Dictionary<string, object>
-            { { "x-delay", _configDeadLetter!.TimeSpan.TotalMilliseconds } };
-        }
+            var body = eventArgs.Body.ToArray();
+            var messageString = Encoding.UTF8.GetString(body);
 
-        properties.Headers["x-delay"] = _configDeadLetter!.TimeSpan.TotalMilliseconds;
+            TMessage? message = JsonConvert.DeserializeObject<TMessage>(messageString);
 
-        object? countCurrent;
-        properties.Headers.TryGetValue("count", out countCurrent);
-        int count = countCurrent == null ? 1 : (int)countCurrent + 1;
-        properties.Headers["count"] = count;
-
-        if (count > _configDeadLetter!.Attempt)
-        {
-            if (_consumerFaultHandler is not null)
+            if (message is null)
             {
-                var context = new ConsumerContext<TMessage>(message, basicDeliver.DeliveryTag, _channel);
-                await _consumerFaultHandler.Consumer(context, exception);
+                throw new ArgumentException("message is null");
             }
 
-            _channel.BasicNack(basicDeliver.DeliveryTag, false, false);
-            _logger.LogWarning("Message foi apagada.");
-
-            return;
+            return message;
         }
-
-        string json = JsonConvert.SerializeObject(message);
-        var body = Encoding.UTF8.GetBytes(json);
-
-        _channel.BasicPublish(ExchageNameRetry, "", properties, body);
-        _channel.BasicAck(basicDeliver.DeliveryTag, false);
+        catch (Exception err)
+        {
+            _logger.LogError("Fail transform body the message, err: {0}", err.Message);
+            _channel.BasicReject(eventArgs.DeliveryTag, false);
+            throw;
+        }
+    }
+    
+    public override void Dispose()
+    {
+        _channel.Dispose();
+        _connection.Dispose();        
     }
 }
 

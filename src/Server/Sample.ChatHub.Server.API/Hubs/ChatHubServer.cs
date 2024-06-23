@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Polly;
 using Sample.ChatHub.Bus;
 using Sample.ChatHub.Domain.Contracts;
 using Sample.ChatHub.Domain.Contracts.Messages;
@@ -23,13 +24,23 @@ public class ChatHubServer : BaseHub<IChatHub>
 
     public override async Task OnConnectedAsync()
     {
-        _logger.LogInformation("{0} Connected from the server.", UserName);
-        await this.SetChannelAsync();
+        try
+        {
+            _logger.LogInformation("{0} Connected from the server.", UserName);
+            await this.SetChannelAsync();
 
-        var context = new ContextMessage(Guid.Empty, Guid.Empty, "Sistema", $"Bem vindo ao chat {UserName!}");
-        await Clients.Client(Context.ConnectionId).ReceiveMessage(context);
+            var context = new ContextMessage(Guid.Empty, Guid.Empty, "Sistema", $"Bem vindo ao chat {UserName!}");
+            await Clients.Client(Context.ConnectionId).ReceiveMessage(context);
 
-        await _context.PublishMessage<SyncUserMessage>(new(UserId));
+            await _context.PublishMessage<SyncUserMessage>(new(UserId));
+        }
+        catch (Exception err)
+        {
+            var context = new ContextMessage(Guid.Empty, Guid.Empty, "Sistema", "Nao foi possivel sincronizar o usuario.");
+            await Clients.Client(Context.ConnectionId).ReceiveMessage(context);
+
+            _logger.LogError("Falha ao sincronizar o usuario erro: {0}", err.Message);
+        }
     }
 
     public override Task OnDisconnectedAsync(Exception? exception)

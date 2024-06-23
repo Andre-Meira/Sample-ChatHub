@@ -2,5 +2,5 @@
 
 namespace Sample.ChatHub.Domain.Contracts.Messages;
 
-[Contract("message-received")]
+[Message("message-received")]
 public record MessageReceived(Guid IdChat, Guid IdMessage, Guid IdUser);

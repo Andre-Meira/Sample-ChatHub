@@ -8,6 +8,6 @@ namespace Sample.ChatHub.Domain.Contracts.Messages;
 /// <param name="IdChat">Id do canal que sera feito o envio da message</param>
 /// <param name="Sender">Id do remetente que envio a message</param>
 /// <param name="Text">Message que sera enviada</param>
-[Contract("send-message")]
+[Message("send-message")]
 public record SendMessage(ContextMessage Context);
 
